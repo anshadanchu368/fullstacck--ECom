@@ -1,23 +1,42 @@
-export const registerFormControls =[
+export const registerFormControls = [
     {
-        name:'userName',
-        label:"Username",
-        placeholder:"Enter your user name",
-        componentTyoe:'input',
-        type:'text,'
+        name: 'userName',
+        label: "Username",
+        placeholder: "Enter your user name",
+        componentType: 'input', 
+        type: 'text' 
     },
     {
-        name:'email',
-        label:"Email",
-        placeholder:"Enter your email",
-        componentTyoe:'input',
-        type:'email,'
+        name: 'email',
+        label: "Email",
+        placeholder: "Enter your email",
+        componentType: 'input', 
+        type: 'email' 
     },
     {
-        name:'password',
-        label:"Password",
-        placeholder:"Enter your Password",
-        componentTyoe:'input',
-        type:'Password,'
+        name: 'password',
+        label: "Password",
+        placeholder: "Enter your Password",
+        componentType: 'input',
+        type: 'password' 
     },
-]
+];
+
+
+export const loginFormControls = [
+
+    {
+        name: 'email',
+        label: "Email",
+        placeholder: "Enter your email",
+        componentType: 'input', 
+        type: 'email' 
+    },
+    {
+        name: 'password',
+        label: "Password",
+        placeholder: "Enter your Password",
+        componentType: 'input',
+        type: 'password' 
+    },
+];
