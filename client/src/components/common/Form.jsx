@@ -1,5 +1,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import React from "react";
+import { Button } from "../button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 const CommonForm = ({
   formControls,
@@ -14,7 +17,7 @@ const CommonForm = ({
     switch (getControlItem.componentType) {
       case "input":
         element = (
-          <input
+          <Input
             type={getControlItem.type}
             name={getControlItem.name}
             id={getControlItem.name}
@@ -101,7 +104,7 @@ const CommonForm = ({
           );
         })}
       </div>
-      <Button className="mt-2 w-full">{buttonText || 'Submit'}</Button>
+      <Button className="mt-4 w-full">{buttonText || 'Submit'}</Button>
     </form>
   );
 };
