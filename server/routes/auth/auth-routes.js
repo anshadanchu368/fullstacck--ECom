@@ -1,4 +1,4 @@
-const express=require("express")
+const express=require("express");
 const {RegisterUser} = require("../../controllers/auth/auth-controller")
 
 const router= express.Router();

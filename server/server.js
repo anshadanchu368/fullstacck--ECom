@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const authRouter= require('./routes/auth/auth-routes')
 
-mongoose.connect("mongodb+srv://Jasmine:MyUserPassword@cluster1.ksqolek.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1")
+mongoose.connect("mongodb+srv://Jasmine:MyUserPassword@cluster1.ksqolek.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster1")
                .then(()=>console.log("mongodb connected"))
                .catch((e)=>console.log(e));
 
