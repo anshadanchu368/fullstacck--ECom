@@ -12,7 +12,7 @@ const RegisterUser = async (req, res) => {
     const newUser = new User({
       userName,
       email,
-      hashPassword,
+      password:hashPassword,
     });
 
     await newUser.save();
