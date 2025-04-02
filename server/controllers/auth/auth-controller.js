@@ -7,12 +7,19 @@ const RegisterUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
   try {
+    const checkUser = await User.findOne({ email });
+
+    if (checkUser)
+      return res.json({
+        success: false,
+        message: "User Already exist with same email",
+      });
     const hashPassword = await bcrypt.hash(password, 12);
 
     const newUser = new User({
       userName,
       email,
-      password:hashPassword,
+      password: hashPassword,
     });
 
     await newUser.save();
@@ -30,10 +37,43 @@ const RegisterUser = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+
+    const checkUser = await User.findOne({email});
+
+    if(!checkUser) return res.json({
+        success: false,
+        message:' User doesnt exists please register first'
+    })
+
+    const checkPassswordMatch = await bcrypt.compare(password, checkUser.password)
+
+    if(!checkPassswordMatch) return res.json({
+      success: false,
+      message:"Incorrect password! please try again"
+    })
+
+    const token = jwt.sign({
+      id: checkUser._id, role: checkUser.role, email: checkUser.email
+    },'CLIENT_SECRET_KEY', {expiresIn:'60m'})
+
+    res.cookie('token', token, 
+      {httpOnly:true ,
+         secure: false}).json({
+      success:true,
+      message:'Logged in successfully'
+              ,
+              user:{
+                email: checkUser.email,
+                role:checkUser.role,
+                id: checkUser._id
+              } 
+
+     })
+
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -43,6 +83,31 @@ const login = async (req, res) => {
   }
 };
 
+const logout = async(req,res)=>{
+   res.clearCookie("token").json({
+    success:true,
+    message:"logged out successfully"
+   })
+}
+
+const authMiddleware = async(req,res,next)=>{
+   const token = req.cookies.token;
+   if(!token) return res.status(401).json({
+    success: false,
+    message: 'Unauthorized token'
+   })
+
+   try{
+    const decoded = jwt.verify(token,'CLIENT_SECRET_KEY');
+    req.user = decoded;
+    next()
+   }catch(e){
+    res.status(401).json({
+      success: false,
+      message:"Unauthorized user!"
+    });
+   }
+}
 
 
-module.exports ={RegisterUser}
+module.exports = { RegisterUser, loginUser, logout ,authMiddleware};

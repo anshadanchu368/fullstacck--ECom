@@ -18,14 +18,22 @@ import ShoppingHome from "./pages/shopping-view/home";
 import ShoppingList from "./pages/shopping-view/listing";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { checkAuth } from "./store/auth-slice";
+import { useEffect } from "react";
 
 function App() {
 
 
-  const {user, isAuthenticated} = useSelector((state)=>state.auth)
-  console.log("Redux State - isAuthenticated:", isAuthenticated);
-  console.log("Redux State - user:", user);
+  const {user, isAuthenticated ,isLoading} = useSelector((state)=>state.auth)
+ 
+  const dispatch =useDispatch();
+
+  useEffect(()=>{
+    dispatch(checkAuth())
+  },[dispatch])
+
+  if(isLoading) return <div>loading</div>
   return (
     <>
       <div className="flex flex-col overflow-hidden bg-white">
