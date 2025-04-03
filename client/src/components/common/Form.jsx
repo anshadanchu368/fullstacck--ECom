@@ -1,4 +1,11 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import React from "react";
 import { Button } from "../button";
 import { Input } from "../ui/input";
@@ -13,7 +20,7 @@ const CommonForm = ({
 }) => {
   function renderInputsByComponentType(getControlItem) {
     let element = null;
-    const value = formData[getControlItem.name] || ''
+    const value = formData[getControlItem.name] || "";
     switch (getControlItem.componentType) {
       case "input":
         element = (
@@ -23,25 +30,28 @@ const CommonForm = ({
             id={getControlItem.name}
             placeholder={getControlItem.placeholder}
             value={value}
-            onChange={(e)=>
-                setFormData({
-                    ...formData,
-                    [getControlItem.name] :e.target.value
-                })
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: e.target.value,
+              })
             }
           />
         );
         break;
       case "select":
         element = (
-          <Select onValueChange={(value)=>{
-            setFormData({
+          <Select
+            onValueChange={(value) => {
+              setFormData({
                 ...formData,
-                [getControlItem.name] : value
-            })
-          }} value={value}>
+                [getControlItem.name]: value,
+              });
+            }}
+            value={value}
+          >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={getControlItem.placeholder} />
+              <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
               {getControlItem.options && getControlItem.options.length > 0
@@ -62,11 +72,11 @@ const CommonForm = ({
             placeholder={getControlItem.placeholder}
             id={getControlItem.id}
             value={value}
-            onChange={(e)=>
-                setFormData({
-                    ...formData,
-                    [getControlItem.name] :e.target.value
-                })
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: e.target.value,
+              })
             }
           />
         );
@@ -80,11 +90,11 @@ const CommonForm = ({
             id={getControlItem.name}
             placeholder={getControlItem.placeholder}
             value={value}
-            onChange={(e)=>
-                setFormData({
-                    ...formData,
-                    [getControlItem.name] :e.target.value
-                })
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: e.target.value,
+              })
             }
           />
         );
@@ -94,7 +104,7 @@ const CommonForm = ({
   }
   return (
     <form onSubmit={onSubmit}>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 px-4 ">
         {formControls.map((controlItem) => {
           return (
             <div className="grid w-full" key={controlItem.name}>
@@ -103,8 +113,8 @@ const CommonForm = ({
             </div>
           );
         })}
+      <Button className="mt-4 w-l ">{buttonText || "Submit"}</Button>
       </div>
-      <Button className="mt-4 w-full">{buttonText || 'Submit'}</Button>
     </form>
   );
 };
