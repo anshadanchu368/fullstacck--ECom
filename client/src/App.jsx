@@ -21,6 +21,7 @@ import UnauthPage from "./pages/unauth-page";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "./store/auth-slice";
 import { useEffect } from "react";
+import { Skeleton } from "./components/ui/skeleton";
 
 function App() {
 
@@ -33,7 +34,8 @@ function App() {
     dispatch(checkAuth())
   },[dispatch])
 
-  if(isLoading) return <div>loading</div>
+  if(isLoading) return <Skeleton className="w-full min-h-screen " />
+
   return (
     <>
       <div className="flex flex-col overflow-hidden bg-white">
