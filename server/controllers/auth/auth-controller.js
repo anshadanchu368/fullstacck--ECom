@@ -84,10 +84,11 @@ const loginUser = async (req, res) => {
 };
 
 const logout = async(req,res)=>{
-   res.clearCookie("token").json({
+  res.clearCookie("token").json({
     success:true,
     message:"logged out successfully"
-   })
+  })
+  console.log("logout hit")
 }
 
 const authMiddleware = async(req,res,next)=>{

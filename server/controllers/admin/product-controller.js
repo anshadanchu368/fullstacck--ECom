@@ -76,7 +76,9 @@ const fetchAllProducts = async (req, res) => {
 
 const editProduct = async (req, res) => {
   try {
+
     const { id } = req.params;
+    console.log(id,"editing Id")
     const {
       image,
       title,
@@ -87,6 +89,8 @@ const editProduct = async (req, res) => {
       salePrice,
       totalStock,
     } = req.body;
+
+    console.log(req.body)
 
     const findProduct = await Product.findById(id);
     if (!findProduct)

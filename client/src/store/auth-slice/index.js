@@ -36,7 +36,24 @@ export const loginUser = createAsyncThunk(
           withCredentials: true,
         }
       );
-      console.log("Login API Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.log("Login Error:", error.response?.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  "/auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/auth/logout`,{
+          withCredentials:true,
+        }
+        
+      );
       return response.data;
     } catch (error) {
       console.log("Login Error:", error.response?.data);
@@ -111,6 +128,11 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success ? true : false;
       })
       .addCase(checkAuth.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
