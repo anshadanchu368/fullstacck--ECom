@@ -3,6 +3,7 @@ const mongoose=require("mongoose")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const authRouter= require('./routes/auth/auth-routes')
+const adminProductsRouter = require('./routes/admin/products-route')
 
 mongoose.connect("mongodb+srv://Jasmine:MyUserPassword@cluster1.ksqolek.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster1")
                .then(()=>console.log("mongodb connected"))
@@ -28,6 +29,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api/auth', authRouter)
+app.use('/api/admin/products',adminProductsRouter)
 
 
 
