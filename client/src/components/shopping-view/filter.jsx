@@ -9,26 +9,20 @@ const ProductFilter = () => {
       <div className="p-4 border-b">
         <h2 className="text-lg font-extrabold">Filter</h2>
       </div>
-      <div className="p-4 space-y-4 ">
-        {Object.keys(filterOptions).map((keyItem) => {
-          return (
-            <>
-              <div>
-                <h3 className="text-base font-bold">{keyItem}</h3>
-                <div className="grid gap-2 mt-2">
-                  {filterOptions[keyItem].map((option) => (
-
-                    <Label key={option.id} className="flex items-center gap-2 font-medium">
-                      <Checkbox id={option.id}/>
-                      {option.label}
-                    </Label>
-                  )
-                  )}
-                </div>
-              </div>
-            </>
-          );
-        })}
+      <div className="p-4 space-y-4">
+        {Object.keys(filterOptions).map((keyItem) => (
+          <div key={keyItem}>
+            <h3 className="text-base font-bold capitalize">{keyItem}</h3>
+            <div className="grid gap-2 mt-2">
+              {filterOptions[keyItem].map((option) => (
+                <Label key={option.id} className="flex items-center gap-2 font-medium">
+                  <Checkbox id={option.id} />
+                  {option.label}
+                </Label>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
