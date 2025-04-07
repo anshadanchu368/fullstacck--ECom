@@ -8,12 +8,19 @@ const initialState = {
 
 export const fetchAllFilteredProducts = createAsyncThunk(
   "/product/fetchAllProducts",
-  async (_, thunkAPI) => {
+  async ({filterParams ,sortParams}) => {
     try {
-      const result = await axios.get("http://localhost:5000/api/shop/products/get");
+      const query = new URLSearchParams({
+        ...filterParams,
+        sortBy: sortParams
+      })
+
+      const result = await axios.get(`http://localhost:5000/api/shop/products/get?${query}`);
       return result.data;
+
+
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch products");
+      throw err.response?.data || new Error("Failed to fetch products");
     }
   }
 );
