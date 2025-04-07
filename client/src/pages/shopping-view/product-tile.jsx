@@ -4,10 +4,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 import React from "react";
 
-const ShoppingProductTile = ({ product }) => {
+const ShoppingProductTile = ({ product ,handleProductDetails}) => {
   return (
     <Card className="w-full max-w-sm mx-auto">
-      <div>
+      <div onClick={()=>handleProductDetails(product?._id)}>
         <div className="relative">
           <img
             src={product?.image}

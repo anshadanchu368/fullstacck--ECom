@@ -13,9 +13,10 @@ import {
 import { ArrowUpDownIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchAllFilteredProducts } from "@/store/shop/products-slice";
+import { fetchAllFilteredProducts, fetchProductDetails } from "@/store/shop/products-slice";
 import ShoppingProductTile from "./product-tile";
 import { useSearchParams } from "react-router-dom";
+import ProductsDetailsDialog from "./product-Details";
 
 function createSearchParamsHelper(filterParams){
       const queryParams =[];
@@ -36,13 +37,14 @@ function createSearchParamsHelper(filterParams){
 const ShoppingList = () => {
   const dispatch = useDispatch();
 
-  const { productList } = useSelector((state) => state.shoppingProducts);
+  const { productList ,productDetails} = useSelector((state) => state.shoppingProducts);
   console.log(productList);
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openDetailsDialog, setOpenDetailsDialog] =useState(false)
 
   function handleSort(value) {
     console.log(value);
@@ -72,7 +74,6 @@ const ShoppingList = () => {
     }
 
     setFilters(copyFilters);
-    console.log(copyFilters);
     sessionStorage.setItem("filters", JSON.stringify(copyFilters));
   }
 
@@ -96,6 +97,15 @@ const ShoppingList = () => {
     }
   }, [dispatch, filters, sort]);
 
+  function handleProductDetails(getCurrentProductId){
+       dispatch(fetchProductDetails(getCurrentProductId))
+  }
+
+  useEffect(()=>{
+      if(productDetails !== null ) setOpenDetailsDialog(true)
+  },[productDetails])
+
+  console.log(productDetails," productDetails")
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -142,11 +152,13 @@ const ShoppingList = () => {
                 <ShoppingProductTile
                   key={productItem._id}
                   product={productItem}
+                  handleProductDetails={handleProductDetails}
                 />
               ))
             : null}
         </div>
       </div>
+      <ProductsDetailsDialog open={openDetailsDialog }setOpen={setOpenDetailsDialog} productDetails={productDetails}/>
     </div>
   );
 };
