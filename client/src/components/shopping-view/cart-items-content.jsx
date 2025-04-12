@@ -60,6 +60,7 @@ console.log(typeof cartItem?.salePrice, cartItem?.salePrice,"saleprice of cartit
             variant="outline"
             className="h-8 w-14 rounded-full"
             size="icon"
+            disabled={cartItem?.quantity === 1}
             onClick={() => handleQuantityUpdate(cartItem, cartItem?.quantity - 1)}
           >
             <Minus className="w-4 h-4" />

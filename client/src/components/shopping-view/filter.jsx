@@ -4,6 +4,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 
 const ProductFilter = ({filters,handleFilter}) => {
+  
   return (
     <div className="bg-background rounded-lg shadow-sm">
       <div className="p-4 border-b">
