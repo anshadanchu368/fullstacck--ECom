@@ -29,7 +29,17 @@ const Address = () => {
   const { addressList } = useSelector((state) => state.shopAddress);
 
   function handleManageAddress(event) {
+
     event.preventDefault();
+
+    if(addressList.length >= 3 && currentEditedID === null ){
+      setFormData(initialAddressFormdata)
+      toast("Success",{
+        title: "You can add max 3 addresses",
+        variant: "destructive"
+      })
+      return;
+    }
   
     if (currentEditedId !== null) {
       dispatch(
@@ -43,7 +53,7 @@ const Address = () => {
           dispatch(fetchAllAddresses(user?.id));
           setCurrentEditedId(null);
           setFormData(initialAddressFormdata);
-          toast.success("Success", {
+          toast("Success", {
            title:" Address updated successfully",
           });
         }
@@ -58,7 +68,7 @@ const Address = () => {
         if (data?.payload?.success) {
           dispatch(fetchAllAddresses(user?.id));
           setFormData(initialAddressFormdata);
-          toast.success("Success", {
+          toast("Success", {
             title:" Address added successfully",
            });
         }
@@ -73,6 +83,7 @@ const Address = () => {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllAddresses(user?.id));
+      
       }
     });
   }
