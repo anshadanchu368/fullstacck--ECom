@@ -198,7 +198,7 @@ const ShoppingHome = () => {
             {brands.map((brandsItem) => (
               <Card
                 onClick={() => handleNaviagteToListingPage(brandsItem, "brand")}
-                classNameclassName="cursor-pointer hover:shadow-lg transition-shadow"
+                className="cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <brandsItem.icon className="w-12 h-12 mb-4 text-primary " />
