@@ -13,41 +13,48 @@ import {
 import { ArrowUpDownIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchAllFilteredProducts, fetchProductDetails } from "@/store/shop/products-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/products-slice";
 import ShoppingProductTile from "./product-tile";
 import { useSearchParams } from "react-router-dom";
 import ProductsDetailsDialog from "./product-Details";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
-function createSearchParamsHelper(filterParams){
-      const queryParams =[];
-      for(const [key,value] of Object.entries(filterParams)){
-        if(Array.isArray(value) && value.length >0){
-          const paramValue =value.join(',')
+function createSearchParamsHelper(filterParams) {
+  const queryParams = [];
+  for (const [key, value] of Object.entries(filterParams)) {
+    if (Array.isArray(value) && value.length > 0) {
+      const paramValue = value.join(",");
 
-          queryParams.push(`${key}=${encodeURIComponent(paramValue)}`)
-        }
-      }
-      console.log(queryParams,"query")
-      return queryParams.join('&')
-
+      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+    }
+  }
+  console.log(queryParams, "query");
+  return queryParams.join("&");
 }
-
-
 
 const ShoppingList = () => {
   const dispatch = useDispatch();
 
-  const { productList ,productDetails} = useSelector((state) => state.shoppingProducts);
-  console.log(productList);
+  const { productList, productDetails } = useSelector(
+    (state) => state.shoppingProducts
+  );
+ 
+
+
+  const { user } = useSelector((state) => state.auth);
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [openDetailsDialog, setOpenDetailsDialog] =useState(false)
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   function handleSort(value) {
-    console.log(value);
     setSort(value);
   }
 
@@ -77,6 +84,23 @@ const ShoppingList = () => {
     sessionStorage.setItem("filters", JSON.stringify(copyFilters));
   }
 
+  function handleAddToCart(getCurrentProductId) {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) =>{
+      if(data?.payload?.success){
+        dispatch(fetchCartItems(user?.id))
+        toast.success("Success", {
+          description: "The product was added to your inventory.",
+        });
+      }
+    });
+  }
+
   useEffect(() => {
     const savedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
     setFilters(savedFilters);
@@ -90,22 +114,24 @@ const ShoppingList = () => {
     }
   }, [filters]);
 
-
   useEffect(() => {
     if (filters !== null && sort !== null) {
-      dispatch(fetchAllFilteredProducts({ filterParams:filters ,sortParams:sort }));
+      dispatch(
+        fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
+      );
     }
   }, [dispatch, filters, sort]);
 
-  function handleProductDetails(getCurrentProductId){
-       dispatch(fetchProductDetails(getCurrentProductId))
+  function handleProductDetails(getCurrentProductId) {
+    dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  useEffect(()=>{
-      if(productDetails !== null ) setOpenDetailsDialog(true)
-  },[productDetails])
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
 
-  console.log(productDetails," productDetails")
+  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -153,12 +179,17 @@ const ShoppingList = () => {
                   key={productItem._id}
                   product={productItem}
                   handleProductDetails={handleProductDetails}
+                  handleAddToCart={handleAddToCart}
                 />
               ))
             : null}
         </div>
       </div>
-      <ProductsDetailsDialog open={openDetailsDialog }setOpen={setOpenDetailsDialog} productDetails={productDetails}/>
+      <ProductsDetailsDialog
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+      />
     </div>
   );
 };

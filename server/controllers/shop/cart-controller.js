@@ -63,7 +63,7 @@ const fetchCartItems = async (req, res) => {
     }
 
     const cart = await Cart.findOne({ userId }).populate({
-      path: "item.productId",
+      path: "items.productId",
       select: "image title price salePrice",
     });
 
@@ -83,7 +83,7 @@ const fetchCartItems = async (req, res) => {
       await cart.save();
     }
 
-    const populateCartItmsm = validateItem.map((item) => ({
+    const populateCartItmsm = validItems.map((item) => ({
       productId: item.productId._id,
       image: item.productId.image,
       title: item.productId.title,
@@ -127,18 +127,17 @@ const updateCartItemQuantity = async (req, res) => {
       });
     }
 
-    const findCurentProductIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
-    );
+    const findCurrentProductIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+ 
 
-    if (findCurentProductIndex === -1) {
+    if (findCurrentProductIndex === -1) {
       return res.status(404).json({
         success: false,
         message: " Cart Itmes not present",
       });
     }
 
-    cart.item[findCurrentProductIndex].quantity = quantity;
+    cart.items[findCurrentProductIndex].quantity = quantity;
 
     await cart.save();
 
@@ -197,15 +196,18 @@ const deleteCartItem = async (req, res) => {
           message: " Cart not found",
         });
       }
-      cart.items =cart.items.filter(item=> item.productId._id.toString() !== productId)
 
-      await cart.save();
+      cart.items = cart.items.filter(
+        (item) => item.productId._id.toString() !== productId
+      );
 
-      Cart.populate({
-        path: "items.productId",
-      select: "image title price salePrice",
-      })
-
+      await cart.save()
+      
+      await cart.populate({
+          path: "items.productId",
+        select: "image title price salePrice",
+        })
+        
       const populateCartItmsm = cart.items.map((item) => ({
         productId: item.productId ? item.productId._id : null,
         image: item.productId ? item.productId.image : null,
@@ -213,11 +215,12 @@ const deleteCartItem = async (req, res) => {
         price: item.productId ? item.productId.price : null,
         salePrice: item.productId ? item.productId.salePrice : null,
         quantity: item.quantity,
-  
-  
+        
+        
       }));
-  
-
+      
+      
+      
   
       res.status(200).json({
           success: true,

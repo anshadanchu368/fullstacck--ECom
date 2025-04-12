@@ -4,7 +4,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 import React from "react";
 
-const ShoppingProductTile = ({ product ,handleProductDetails}) => {
+const ShoppingProductTile = ({ product ,handleProductDetails, handleAddToCart}) => {
+
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div onClick={()=>handleProductDetails(product?._id)}>
@@ -45,10 +46,10 @@ const ShoppingProductTile = ({ product ,handleProductDetails}) => {
             ) : null}
           </div>
         </CardContent>
-        <CardFooter>
-            <Button className='w-full'>Add to cart</Button>
-        </CardFooter>
       </div>
+        <CardFooter>
+            <Button onClick={() => handleAddToCart(product?._id)}className='w-full'>Add to cart</Button>
+        </CardFooter>
     </Card>
   );
 };

@@ -22,8 +22,10 @@ const Register = () => {
       dispatch(registerUser(formData)).then((data)=>{
         console.log(data)
         if(data?.payload.success) {
-          toast.success(data?.payload?.message || "Registration successful!"); 
-          navigate('/auth/login')      
+          toast.success("Registration successful! Please login with your new account.");
+          setTimeout(() => {
+            navigate('/auth/login');
+          }, 1000);
         } else{
           toast.error(data?.payload?.message || "Registration failed!");
           console.log("unsuccesful register")

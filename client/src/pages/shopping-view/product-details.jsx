@@ -1,6 +1,6 @@
 import { Button } from "@/components/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { IndianRupee, StarIcon, StarsIcon } from "lucide-react";
@@ -21,12 +21,12 @@ function ProductsDetailsDialog({ open, setOpen, productDetails }) {
           />
         </div>
         <div className="">
-          <div className="text-3xl font-extrabold">
+          <DialogTitle className="text-3xl font-extrabold">
             {productDetails?.title}
             <p className="text-muted-foreground text-lg">
               {productDetails?.description}
             </p>
-          </div>
+          </DialogTitle>
 
           <div className="flex items-center justify-between">
             <p
@@ -65,7 +65,7 @@ function ProductsDetailsDialog({ open, setOpen, productDetails }) {
                    </Avatar>
                    <div className="grid gap-1">
                     <div className="flex items-center gap-2">
-                        <h3 className="font-bold">Sangam Mukherjee</h3>
+                        <h3 className="font-bold">hashim Anshad</h3>
                     </div>
                     <div className="flex items-center gap-0 5">
                         <StarIcon className="w-5 h-5 fill-primary"/>
