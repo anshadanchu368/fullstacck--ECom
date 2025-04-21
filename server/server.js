@@ -1,3 +1,4 @@
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -6,6 +7,8 @@ const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-route");
 const shopProductsRouter = require("./routes/shop/products-route");
 const shopCartRouter = require("./routes/shop/cart-routes");
+const shopAddressRouter = require("./routes/shop/address-routes");
+const shopOrderRouter = require("./routes/shop/order-routes");
 mongoose
   .connect(
     "mongodb+srv://Jasmine:MyUserPassword@cluster1.ksqolek.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster1"
@@ -37,6 +40,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
+app.use("/api/shop/address", shopAddressRouter);
+app.use("/api/shop/order", shopOrderRouter);
 
 app.listen(PORT, () => {
   console.log(`server is listening on ${PORT}`);

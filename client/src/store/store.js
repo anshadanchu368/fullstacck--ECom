@@ -4,6 +4,7 @@ import AdminProductSlice from './admin/product-slice'
 import shoppingProductSlice from './shop/products-slice'
 import shoppingCartSLice from './shop/cart-slice'
 import shopAddressSlice from './shop/address-slice'
+import shopOrderSlice from './shop/order-slice'
 
 
 const store=configureStore({
@@ -12,7 +13,8 @@ const store=configureStore({
         adminProducts :AdminProductSlice,
         shoppingProducts: shoppingProductSlice,
         shoppingCart: shoppingCartSLice,
-        shopAddress: shopAddressSlice
+        shopAddress: shopAddressSlice,
+        shopOrder: shopOrderSlice
 
     }
 })
