@@ -33,6 +33,8 @@ const ShoppingOrders = () => {
     setOpenDetailsDialog(true);
   };
 
+  console.log(orderDetails,"orderDetaisl")
+
   return (
     <Card>
       <CardHeader>
