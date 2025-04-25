@@ -3,6 +3,7 @@ import { SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { Button } from '../button';
 import UserCartItemsCOntent from './cart-items-content';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const UserCartWrapper = ({ cartItems ,setOpenCartSheet }) => {
 
@@ -35,8 +36,13 @@ const UserCartWrapper = ({ cartItems ,setOpenCartSheet }) => {
             <span className="font-bold">{totalCartAmount.toFixed(2)}</span>
           </div>
           <Button onClick={()=>{
+                if (cartItems?.length > 0) {
                navigate('/shop/checkout')
                setOpenCartSheet(false);
+                } else {
+                  toast.error("Your cart is empty!", {
+                    description: "Add some items before proceeding to checkout.",})
+                }
           }
            }className="w-full mt-6">Checkout</Button>
         </div>

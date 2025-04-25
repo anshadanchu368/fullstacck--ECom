@@ -1,4 +1,5 @@
 const Order =require("../../models/Order.js");
+const Cart = require("../../models/Cart");
 // const  paypal =require("@paypal/checkout-server-sdk");
 const  crypto =require("crypto");
 
@@ -68,12 +69,17 @@ const instance = new Razorpay({
       .digest("hex");
 
     if (expectedSignature === razorpay_signature) {
-      await Order.findByIdAndUpdate(orderId, {
+    const updatedOrder=  await Order.findByIdAndUpdate(orderId, {
         paymentId: razorpay_payment_id,
         paymentStatus: "paid",
         orderStatus: "confirmed",
         orderUpdateDate: new Date(),
       });
+
+      if (updatedOrder && updatedOrder.cartId) {
+        await Cart.findByIdAndDelete(updatedOrder.cartId);
+        console.log("🛒 Cart deleted from DB after payment success");
+      }
 
       return res.status(200).json({ success: true, message: "Payment verified" });
     } else {
@@ -86,5 +92,53 @@ const instance = new Razorpay({
 };
 
 
+const getAllOrderByUSer = async(req,res)=>{
+  try{
+     const {userId}= req.params;
 
-module.exports =  {createRazorpayOrder,verifyRazorpayPayment} ;
+     const orders = await Order.find({userId})
+
+     if(!orders.length){
+      return res.status(404).json({
+        success:false,
+        message:'no orders found'
+      })
+     }
+
+     res.status(200).json({
+       success:true,
+       data:orders
+     })
+
+  }catch(e){
+    console.error("Payment verification failed:", e);
+    res.status(500).json({ message: "Server error", error: e.message });
+  }
+}
+
+
+const getOrderDetails = async(req,res)=>{
+  try{
+    const {id}= req.params;
+
+    const order= await Order.findById(id)
+
+    if(!order){
+      return res.status(404).json({
+        success:false,
+        message:'no order found'
+      })
+     }
+
+     res.status(200).json({
+      success:true,
+      data:order
+    })
+  }catch(e){
+    console.error("Payment verification failed:", e);
+    res.status(500).json({ message: "Server error", error: e.message });
+  }
+}
+
+
+module.exports =  {createRazorpayOrder,verifyRazorpayPayment,getAllOrderByUSer,getOrderDetails} ;

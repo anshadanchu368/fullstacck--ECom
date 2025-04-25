@@ -111,7 +111,7 @@ const ShoppingCheckout = () => {
             dispatch(clearCart()); 
 
             // 2. Redirect to return
-            navigate("/payment-return");
+            navigate("/shop/account");
           }
         },
         prefill: {
@@ -131,6 +131,7 @@ const ShoppingCheckout = () => {
     }
   }
 
+  
   return (
     <div className="flex flex-col">
       {/* Banner */}
@@ -163,7 +164,9 @@ const ShoppingCheckout = () => {
             </div>
             <Button
               onClick={handleInitiateRazorpayPayment}
-              className="w-full mt-4"
+              className={`w-full mt-4 ${currentSelectedAddres ? "bg-black text-white" : "bg-gray-700 text-white"} 
+    ${currentSelectedAddres ? "hover:bg-gray-800 hover:scale-105 transition-transform" : "cursor-not-allowed"}`}
+              disabled={!currentSelectedAddres} 
             >
               Checkout with RazorPay
             </Button>

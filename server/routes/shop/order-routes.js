@@ -1,5 +1,5 @@
 const express = require("express");
-const { createNewOrder, getKey, createRazorpayOrder, getRazorpayKey, verifyRazorpayPayment } = require("../../controllers/shop/order-controller");
+const { createNewOrder, getKey, createRazorpayOrder, getRazorpayKey, verifyRazorpayPayment, getAllOrderByUSer, getOrderDetails } = require("../../controllers/shop/order-controller");
 
 
 const router = express.Router();
@@ -20,8 +20,9 @@ router.get("/getkey", async (req, res) => {
     }
   });
 
-// Route to capture PayPal payment after approval
-// router.post("/capture", capturePayment);
+  router.get("/list/:userId",getAllOrderByUSer)
+  router.get("/details/:id",getOrderDetails)
+
 
 module.exports =router
   

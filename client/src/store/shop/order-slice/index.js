@@ -8,6 +8,8 @@ const initialState = {
   paymentStatus: null, // You can track payment status as well
   isLoading: false,
   error: null,
+  orderList: [],
+  orderDetails: null
 };
 
 // Async thunk to create a new Razorpay order
@@ -40,6 +42,35 @@ export const verifyPayment = createAsyncThunk(
   }
 );
 
+export const getAllOrderByUSer = createAsyncThunk(
+  "order/getAllOrderByUSer",
+  async (userId, thunkAPI) => {
+    try {
+      const { data } = await axios.get(`http://localhost:5000/api/shop/order/list/${userId}`);
+      return data; // Return the verification response
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "failed to get user id"
+      );
+    }
+  }
+)
+
+export const getOrderDetails = createAsyncThunk(
+  "order/getOrderDetails",
+  async (id, thunkAPI) => {
+    try {
+      const { data } = await axios.get(`http://localhost:5000/api/shop/order/details/${id}`);
+
+      return data; // Return the verification response
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to get Order Details"
+      );
+    }
+  }
+)
+
 // Slice
 const shoppingOrderSlice = createSlice({
   name: "shopOrder",
@@ -70,7 +101,6 @@ const shoppingOrderSlice = createSlice({
       .addCase(createNewOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
-        state.approvalURL = null;
         state.orderId = null;
       })
       
@@ -87,7 +117,33 @@ const shoppingOrderSlice = createSlice({
         state.isLoading = false;
         state.paymentStatus = "failed"; // Set status to failed if verification fails
         state.error = action.payload;
-      });
+      })
+      .addCase(getAllOrderByUSer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllOrderByUSer.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orderList = action.payload.data
+      })
+      .addCase(getAllOrderByUSer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        state.orderList = [];
+      })
+    
+      .addCase(getOrderDetails.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getOrderDetails.fulfilled, (state, action) => {
+        console.log("Order Details fetched:", action.payload); // ✅ Add this to see what's returned
+        state.isLoading = false;
+        state.orderDetails = action.payload.data;
+      })
+      
+      .addCase(getOrderDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.orderDetails=null
+      })
   },
 });
 
