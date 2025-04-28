@@ -12,7 +12,11 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader } from "../ui/dialog";
 import SHoppingOrderDetailsView from "./order-details";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrderByUSer, getOrderDetails, resetOrderState } from "@/store/shop/order-slice";
+import {
+  getAllOrderByUSer,
+  getOrderDetails,
+  resetOrderState,
+} from "@/store/shop/order-slice";
 import { Badge } from "../ui/badge";
 
 const ShoppingOrders = () => {
@@ -21,7 +25,9 @@ const ShoppingOrders = () => {
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { orderList, orderDetails, isLoading } = useSelector((state) => state.shopOrder);
+  const { orderList, orderDetails, isLoading } = useSelector(
+    (state) => state.shopOrder
+  );
 
   useEffect(() => {
     if (user?.id) dispatch(getAllOrderByUSer(user.id));
@@ -33,7 +39,7 @@ const ShoppingOrders = () => {
     setOpenDetailsDialog(true);
   };
 
-  console.log(orderDetails,"orderDetaisl")
+  console.log(orderDetails, "orderDetaisl");
 
   return (
     <Card>
@@ -61,13 +67,15 @@ const ShoppingOrders = () => {
                   <TableCell>{orderItem.orderDate?.split("T")[0]}</TableCell>
                   <TableCell>
                     <Badge
-                      className={`py-1 px-3 ${
+                      className={`py-1 px-3 text-xs capitalize ${
                         orderItem?.orderStatus === "confirmed"
                           ? "bg-green-500"
-                          : "bg-black"
+                          : orderItem?.orderStatus === "rejected"
+                          ? "bg-red-500"
+                          : "bg-gray-700"
                       }`}
                     >
-                      {orderItem.orderStatus}
+                      {orderItem?.orderStatus}
                     </Badge>
                   </TableCell>
                   <TableCell>{orderItem.totalAmount}</TableCell>
@@ -82,10 +90,13 @@ const ShoppingOrders = () => {
         </Table>
       </CardContent>
 
-      <Dialog open={openDetailsDialog} onOpenChange={()=>{
-        setOpenDetailsDialog(false)
-        dispatch(resetOrderState())
-      }}>
+      <Dialog
+        open={openDetailsDialog}
+        onOpenChange={() => {
+          setOpenDetailsDialog(false);
+          dispatch(resetOrderState());
+        }}
+      >
         <DialogContent className="max-w-xl">
           <DialogHeader>Order Details</DialogHeader>
           {isLoading ? (

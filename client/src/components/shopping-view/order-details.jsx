@@ -11,12 +11,10 @@ const initialFormDatta = {
 };
 
 const SHoppingOrderDetailsView = ({ orderDetails }) => {
-  const [formData, setFormData] = useState(initialFormDatta);
+  
   const { user } = useSelector((state) => state.auth);
 
-  function handleUpdateStatus(e) {
-    e.preventDefault();
-  }
+
 
   return (
     <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
@@ -46,6 +44,8 @@ const SHoppingOrderDetailsView = ({ orderDetails }) => {
               className={`py-1 px-3 text-xs capitalize ${
                 orderDetails?.orderStatus === "confirmed"
                   ? "bg-green-500"
+                  : orderDetails?.orderStatus === "rejected"
+                  ? "bg-red-500"
                   : "bg-gray-700"
               }`}
             >
@@ -59,7 +59,7 @@ const SHoppingOrderDetailsView = ({ orderDetails }) => {
         {/* Cart Items */}
         <div className="space-y-2">
           <p className="font-semibold text-lg">Order Items</p>
-          <ul className="space-y-3 border border-gray-200 rounded-lg p-4">
+          <ul className="space-y-3 border border-gray-200 rounded-lg max-h-50 overflow-y-auto p-2 ">
             {orderDetails?.cartItems?.map((item) => (
               <li
                 key={item._id}
@@ -81,40 +81,39 @@ const SHoppingOrderDetailsView = ({ orderDetails }) => {
 
         {/* Shipping Info */}
         <div className="space-y-3">
-  <p className="font-semibold text-lg text-gray-800">Shipping Info</p>
+          <p className="font-semibold text-lg text-gray-800">Shipping Info</p>
 
-  <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-300">
-    <div className="grid gap-3 text-sm text-gray-700">
-      <div className="flex items-start gap-2">
-        <span className="font-medium min-w-[80px]">Name:</span>
-        <span>{user.userName}</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="font-medium min-w-[80px]">Address:</span>
-        <span>{orderDetails?.addressInfo?.address}</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="font-medium min-w-[80px]">City:</span>
-        <span>{orderDetails?.addressInfo?.city}</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="font-medium min-w-[80px]">Pincode:</span>
-        <span>{orderDetails?.addressInfo?.pincode}</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="font-medium min-w-[80px]">Phone:</span>
-        <span>{orderDetails?.addressInfo?.phone}</span>
-      </div>
-      {orderDetails?.addressInfo?.notes && (
-        <div className="flex items-start gap-2">
-          <span className="font-medium min-w-[80px]">Notes:</span>
-          <span>{orderDetails.addressInfo.notes}</span>
+          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="grid gap-3 text-sm text-gray-700">
+              <div className="flex items-start gap-2">
+                <span className="font-medium min-w-[80px]">Name:</span>
+                <span>{user.userName}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-medium min-w-[80px]">Address:</span>
+                <span>{orderDetails?.addressInfo?.address}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-medium min-w-[80px]">City:</span>
+                <span>{orderDetails?.addressInfo?.city}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-medium min-w-[80px]">Pincode:</span>
+                <span>{orderDetails?.addressInfo?.pincode}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-medium min-w-[80px]">Phone:</span>
+                <span>{orderDetails?.addressInfo?.phone}</span>
+              </div>
+              {orderDetails?.addressInfo?.notes && (
+                <div className="flex items-start gap-2">
+                  <span className="font-medium min-w-[80px]">Notes:</span>
+                  <span>{orderDetails.addressInfo.notes}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      )}
-    </div>
-  </div>
-</div>
-
       </motion.div>
     </DialogContent>
   );

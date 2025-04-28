@@ -23,7 +23,7 @@ const UserCartWrapper = ({ cartItems ,setOpenCartSheet }) => {
         <SheetTitle>Your Cart</SheetTitle>
       </SheetHeader>
 
-      <div className="mt-8 space-y-4">
+      <div className="t-8 flex flex-col space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
         {cartItems && cartItems.length > 0 ? (
           cartItems.map((item) => <UserCartItemsCOntent key={item.productId} cartItem={item} />)
         ) : (
@@ -35,6 +35,8 @@ const UserCartWrapper = ({ cartItems ,setOpenCartSheet }) => {
             <span className="font-bold">Total</span>
             <span className="font-bold">{totalCartAmount.toFixed(2)}</span>
           </div>
+        </div>
+      </div>
           <Button onClick={()=>{
                 if (cartItems?.length > 0) {
                navigate('/shop/checkout')
@@ -44,9 +46,7 @@ const UserCartWrapper = ({ cartItems ,setOpenCartSheet }) => {
                     description: "Add some items before proceeding to checkout.",})
                 }
           }
-           }className="w-full mt-6">Checkout</Button>
-        </div>
-      </div>
+        }className="w-full mt-6">Checkout</Button>
     </SheetContent>
   );
 };

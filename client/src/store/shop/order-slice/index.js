@@ -3,7 +3,6 @@ import axios from "axios";
 
 // Initial state
 const initialState = {
-  approvalURL: null,
   orderId: null,
   paymentStatus: null, // You can track payment status as well
   isLoading: false,
@@ -135,7 +134,7 @@ const shoppingOrderSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getOrderDetails.fulfilled, (state, action) => {
-        console.log("Order Details fetched:", action.payload); // ✅ Add this to see what's returned
+      
         state.isLoading = false;
         state.orderDetails = action.payload.data;
       })
