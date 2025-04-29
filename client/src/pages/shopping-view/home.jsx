@@ -1,34 +1,25 @@
-import { Button } from "@/components/button";
-import imageOne from "../../assets/banner/bannerImage.png";
-import imageTwo from "../../assets/banner/image6.png";
-import imageThree from "../../assets/banner/image7.png";
-import {
-  Airplay,
-  BabyIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CloudLightning,
-  Heater,
-  Images,
-  Shirt,
-  ShirtIcon,
-  ShoppingBasket,
-  UmbrellaIcon,
-  WashingMachine,
-  WatchIcon,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Airplay, BabyIcon, ChevronLeftIcon, ChevronRightIcon, CloudLightning, Heater, Images, Shirt, ShirtIcon, ShoppingBasket, UmbrellaIcon, WashingMachine, WatchIcon, ArrowRight, Heart, Instagram, Facebook, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
 } from "@/store/shop/products-slice";
-import ShoppingProductTile from "./product-tile";
-import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
-import { toast } from "sonner";
+import ShoppingProductTile from "./product-tile";
 import ProductsDetailsDialog from "./product-details";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+
+// Import images
+import imageOne from "../../assets/banner/bannerImage.png";
+import imageTwo from "../../assets/banner/image6.png";
+import imageThree from "../../assets/banner/image7.png";
 
 const categories = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -49,6 +40,14 @@ const brands = [
 
 const ShoppingHome = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isIntersecting, setIsIntersecting] = useState({
+    categories: false,
+    featured: false,
+    brands: false,
+  });
+  const categoryRef = useRef(null);
+  const featuredRef = useRef(null);
+  const brandsRef = useRef(null);
 
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
@@ -56,16 +55,57 @@ const ShoppingHome = () => {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
-  const {cartItems} = useSelector((state) => state.shoppingCart);
+  const { cartItems } = useSelector((state) => state.shoppingCart);
 
   const [addingProductId, setAddingProductId] = useState(null);
-
 
   const slides = [imageOne, imageTwo, imageThree];
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+
+  // Intersection Observer setup
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1,
+    };
+
+    const categoryObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting((prev) => ({ ...prev, categories: true }));
+        }
+      });
+    }, observerOptions);
+
+    const featuredObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting((prev) => ({ ...prev, featured: true }));
+        }
+      });
+    }, observerOptions);
+
+    const brandsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting((prev) => ({ ...prev, brands: true }));
+        }
+      });
+    }, observerOptions);
+
+    if (categoryRef.current) categoryObserver.observe(categoryRef.current);
+    if (featuredRef.current) featuredObserver.observe(featuredRef.current);
+    if (brandsRef.current) brandsObserver.observe(brandsRef.current);
+
+    return () => {
+      if (categoryRef.current) categoryObserver.unobserve(categoryRef.current);
+      if (featuredRef.current) featuredObserver.unobserve(featuredRef.current);
+      if (brandsRef.current) brandsObserver.unobserve(brandsRef.current);
+    };
+  }, []);
 
   function handleNaviagteToListingPage(getCurrentItem, section) {
     sessionStorage.removeItem("filters");
@@ -76,6 +116,7 @@ const ShoppingHome = () => {
     sessionStorage.setItem("filters", JSON.stringify(currentFIlter));
     navigate(`/shop/list`);
   }
+
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
@@ -102,19 +143,19 @@ const ShoppingHome = () => {
   }
 
   function handleAddToCart(getCurrentProductId, getTotalStock) {
-    if (addingProductId) return; 
-  
-    setAddingProductId(getCurrentProductId); 
-  
+    if (addingProductId) return;
+
+    setAddingProductId(getCurrentProductId);
+
     const getCartItems = cartItems.items || [];
-  
+
     const indexOfCurrentItem = getCartItems.findIndex(
       (item) => item.productId === getCurrentProductId
     );
-  
+
     if (indexOfCurrentItem > -1) {
       const currentQuantity = getCartItems[indexOfCurrentItem].quantity;
-  
+
       if (currentQuantity + 1 > getTotalStock) {
         toast.error(`Only ${getTotalStock} items are available in stock`, {
           description: "You cannot add more than available stock.",
@@ -123,7 +164,6 @@ const ShoppingHome = () => {
         return;
       }
     } else {
-      
       if (getTotalStock < 1) {
         toast.error("This product is out of stock.", {
           description: "Cannot add this product to cart.",
@@ -132,7 +172,7 @@ const ShoppingHome = () => {
         return;
       }
     }
-  
+
     dispatch(
       addToCart({
         userId: user?.id,
@@ -152,20 +192,64 @@ const ShoppingHome = () => {
         setAddingProductId(null);
       });
   }
-  
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative w-full h-[600px] overflow-hidden">
-        {slides.map((slide, index) => (
-          <img
-            src={slide}
-            key={index}
-            className={`${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
+      {/* Hero Banner with Animation */}
+      <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent z-10"></div>
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentSlide}
+            src={slides[currentSlide]}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute top-0 left-0 w-full h-full object-cover"
           />
-        ))}
+        </AnimatePresence>
+
+        {/* Hero Content */}
+        <div className="absolute inset-0 z-20 flex items-center">
+          <div className="container mx-auto px-4 md:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="max-w-lg"
+            >
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+                Discover Your Style
+              </h1>
+              <p className="text-white/90 text-sm sm:text-base mb-6">
+                Explore our latest collection and find the perfect pieces to express yourself.
+              </p>
+              <Button 
+                onClick={() => navigate('/shop/list')}
+                className="group"
+              >
+                Shop Now
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Carousel Controls */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentSlide ? "w-8 bg-primary" : "bg-white/50"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
         <Button
           onClick={() =>
             setCurrentSlide(
@@ -174,82 +258,330 @@ const ShoppingHome = () => {
           }
           variant="outline"
           size="icon"
-          className="absolute top-1/2 left-4 transform  -transform-translate-y-1/2 bg-white/80"
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-20 h-8 w-8 sm:h-10 sm:w-10 rounded-full shadow-md"
         >
           <ChevronLeftIcon className="w-4 h-4" />
         </Button>
         <Button
           onClick={() =>
             setCurrentSlide(
-              (prevSlide) => (prevSlide + 1 + slides.length) % slides.length
+              (prevSlide) => (prevSlide + 1) % slides.length
             )
           }
           variant="outline"
           size="icon"
-          className="absolute top-1/2 right-4 transform  -transform-translate-y-1/2 bg-white/80"
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-20 h-8 w-8 sm:h-10 sm:w-10 rounded-full shadow-md"
         >
           <ChevronRightIcon className="w-4 h-4" />
         </Button>
       </div>
-      <section className="py-12 b-gray-50">
-        <div className="container mx-auto p-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Shop by Category
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categories.map((categoryItem) => (
-              <Card
-                onClick={() =>
-                  handleNaviagteToListingPage(categoryItem, "category")
-                }
-                className="cursor-pointer hover:shadow-lg transition-shadow"
+
+      {/* Categories Section */}
+      <section ref={categoryRef} className="py-12 bg-gradient-to-b from-background to-muted/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isIntersecting.categories ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Shop by Category</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">Find exactly what you're looking for in our diverse collection of categories</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+            {categories.map((categoryItem, index) => (
+              <motion.div
+                key={categoryItem.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isIntersecting.categories ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <CardContent className="flex flex-col items-center justify-center p-6">
-                  <categoryItem.icon className="w-12 h-12 mb-4 text-primary " />
-                  <span className="font-bold">{categoryItem.label}</span>
-                </CardContent>
-              </Card>
+                <Card
+                  onClick={() =>
+                    handleNaviagteToListingPage(categoryItem, "category")
+                  }
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group border-muted/50 h-full"
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full">
+                    <div className="bg-primary/10 p-3 rounded-full mb-3 sm:mb-4 group-hover:bg-primary/20 transition-colors duration-300">
+                      <categoryItem.icon className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-primary" />
+                    </div>
+                    <span className="font-medium text-sm sm:text-base">{categoryItem.label}</span>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
-      <section className="py-12">
-        <div className="container mx-auto p-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Feature Products
-          </h2>
-          <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+      {/* Featured Products Section */}
+      <section ref={featuredRef} className="py-12 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Featured Products</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">Discover our handpicked selection of trending items</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {productList && productList.length > 0
-              ? productList.map((productItem) => (
-                  <ShoppingProductTile
-                    handleProductDetails={handleProductDetails}
-                    handleAddToCart={handleAddToCart}
-                    product={productItem}
-                    handleAddToCart={() => handleAddToCart(productItem._id, productItem.totalStock)}
-                  />
+              ? productList.map((productItem, index) => (
+                  <motion.div
+                    key={productItem._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.8) }}
+                  >
+                    <ShoppingProductTile
+                      handleProductDetails={handleProductDetails}
+                      product={productItem}
+                      handleAddToCart={() => handleAddToCart(productItem._id, productItem.totalStock)}
+                    />
+                  </motion.div>
                 ))
-              : null}
+              : Array(4).fill(0).map((_, index) => (
+                  <motion.div
+                    key={`skeleton-${index}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="bg-muted/50 rounded-lg h-[300px] animate-pulse"
+                  />
+                ))}
+          </div>
+          
+          <div className="flex justify-center mt-8">
+            <Button 
+              onClick={() => navigate('/shop/list')}
+              variant="outline" 
+              className="group"
+            >
+              View All Products
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
           </div>
         </div>
       </section>
-      <section className="py-12 b-gray-50">
-        <div className="container mx-auto p-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {brands.map((brandsItem) => (
-              <Card
-                onClick={() => handleNaviagteToListingPage(brandsItem, "brand")}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
+
+      {/* Brands Section */}
+      <section ref={brandsRef} className="py-12 bg-gradient-to-b from-muted/30 to-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Shop by Brand</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">Explore your favorite brands and discover new ones</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+            {brands.map((brandsItem, index) => (
+              <motion.div
+                key={brandsItem.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <CardContent className="flex flex-col items-center justify-center p-6">
-                  <brandsItem.icon className="w-12 h-12 mb-4 text-primary " />
-                  <span className="font-bold">{brandsItem.label}</span>
-                </CardContent>
-              </Card>
+                <Card
+                  onClick={() => handleNaviagteToListingPage(brandsItem, "brand")}
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group border-muted/50 h-full"
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full">
+                    <div className="bg-primary/10 p-3 rounded-full mb-3 sm:mb-4 group-hover:bg-primary/20 transition-colors duration-300">
+                      <brandsItem.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                    </div>
+                    <span className="font-medium text-sm sm:text-base">{brandsItem.label}</span>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Newsletter Section */}
+      <section className="py-12 bg-primary/5">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-3xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-2xl sm:text-3xl font-bold mb-4">Stay Updated</h2>
+              <p className="text-muted-foreground mb-6">
+                Subscribe to our newsletter for exclusive offers and the latest fashion trends
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                <Input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  className="flex-1" 
+                />
+                <Button className="group">
+                  Subscribe
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-muted/30 pt-12 pb-6 border-t">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Shirt className="h-6 w-6 text-primary" />
+                <span className="text-xl font-extrabold tracking-tight">
+                  <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Clap</span>
+                  <span className="text-muted-foreground">Studio</span>
+                </span>
+              </div>
+              <p className="text-muted-foreground text-sm mb-4">
+                Elevate your style with our curated collection of fashion essentials. Quality meets affordability.
+              </p>
+              <div className="flex space-x-3">
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                  <Facebook className="h-4 w-4" />
+                  <span className="sr-only">Facebook</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                  <Instagram className="h-4 w-4" />
+                  <span className="sr-only">Instagram</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                  <Twitter className="h-4 w-4" />
+                  <span className="sr-only">Twitter</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                  <Youtube className="h-4 w-4" />
+                  <span className="sr-only">YouTube</span>
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <h3 className="font-semibold text-lg mb-4">Shop</h3>
+              <ul className="space-y-2">
+                {categories.map((category) => (
+                  <li key={category.id}>
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-muted-foreground hover:text-primary"
+                      onClick={() => handleNaviagteToListingPage(category, "category")}
+                    >
+                      {category.label}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <h3 className="font-semibold text-lg mb-4">Help</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary">
+                    Customer Service
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary">
+                    My Account
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary">
+                    Find a Store
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary">
+                    Legal & Privacy
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary">
+                    Contact Us
+                  </Button>
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <h3 className="font-semibold text-lg mb-4">Contact</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <MapPin className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground text-sm">
+                    123 Fashion Street, Design District, City, 10001
+                  </span>
+                </li>
+                <li className="flex items-center">
+                  <Phone className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                  <span className="text-muted-foreground text-sm">+1 (555) 123-4567</span>
+                </li>
+                <li className="flex items-center">
+                  <Mail className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                  <span className="text-muted-foreground text-sm">support@clapstudio.com</span>
+                </li>
+              </ul>
+            </motion.div>
+          </div>
+
+          <Separator className="mb-6" />
+          
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-muted-foreground text-center md:text-left">
+              © {new Date().getFullYear()} ClapStudio. All rights reserved.
+            </p>
+            <div className="flex gap-4">
+              <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground hover:text-primary">
+                Privacy Policy
+              </Button>
+              <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground hover:text-primary">
+                Terms of Service
+              </Button>
+              <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground hover:text-primary">
+                Cookies
+              </Button>
+            </div>
+          </div>
+        </div>
+      </footer>
+
       <ProductsDetailsDialog
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}
