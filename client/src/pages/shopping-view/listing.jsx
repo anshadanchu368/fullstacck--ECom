@@ -171,7 +171,6 @@ const ShoppingList = () => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  console.log(productList,"product list")
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 md:p-6">
