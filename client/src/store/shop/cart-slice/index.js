@@ -59,21 +59,20 @@ export const deleteCartItem = createAsyncThunk(
 // Update Cart Quantity
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
-  async ({ userId, productId, quantity }, { rejectWithValue }) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/shop/cart/update-cart`, {
+  async ({ userId, productId, quantity }) => {
+    const response = await axios.put(
+      "http://localhost:5000/api/shop/cart/update-cart",
+      {
         userId,
         productId,
         quantity,
-      });
-      console.log("✅ Update Quantity Response:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error("❌ Update Quantity Error:", error);
-      return rejectWithValue(error.response?.data || error.message);
-    }
+      }
+    );
+
+    return response.data;
   }
 );
+
 
 const shoppingCartSlice = createSlice({
   name: "ShoppingCart",

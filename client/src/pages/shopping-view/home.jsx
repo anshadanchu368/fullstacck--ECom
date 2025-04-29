@@ -56,6 +56,10 @@ const ShoppingHome = () => {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
+  const {cartItems} = useSelector((state) => state.shoppingCart);
+
+  const [addingProductId, setAddingProductId] = useState(null);
+
 
   const slides = [imageOne, imageTwo, imageThree];
 
@@ -97,22 +101,58 @@ const ShoppingHome = () => {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddToCart(getCurrentProductId) {
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
+    if (addingProductId) return; 
+  
+    setAddingProductId(getCurrentProductId); 
+  
+    const getCartItems = cartItems.items || [];
+  
+    const indexOfCurrentItem = getCartItems.findIndex(
+      (item) => item.productId === getCurrentProductId
+    );
+  
+    if (indexOfCurrentItem > -1) {
+      const currentQuantity = getCartItems[indexOfCurrentItem].quantity;
+  
+      if (currentQuantity + 1 > getTotalStock) {
+        toast.error(`Only ${getTotalStock} items are available in stock`, {
+          description: "You cannot add more than available stock.",
+        });
+        setAddingProductId(null);
+        return;
+      }
+    } else {
+      
+      if (getTotalStock < 1) {
+        toast.error("This product is out of stock.", {
+          description: "Cannot add this product to cart.",
+        });
+        setAddingProductId(null);
+        return;
+      }
+    }
+  
     dispatch(
       addToCart({
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
       })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
-        toast.success("Success", {
-          description: "The product was added to your inventory.",
-        });
-      }
-    });
+    )
+      .then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast.success("Success", {
+            description: "The product was added to your inventory.",
+          });
+        }
+      })
+      .finally(() => {
+        setAddingProductId(null);
+      });
   }
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -185,6 +225,7 @@ const ShoppingHome = () => {
                     handleProductDetails={handleProductDetails}
                     handleAddToCart={handleAddToCart}
                     product={productItem}
+                    handleAddToCart={() => handleAddToCart(productItem._id, productItem.totalStock)}
                   />
                 ))
               : null}

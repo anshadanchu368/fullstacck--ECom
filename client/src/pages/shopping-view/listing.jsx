@@ -21,7 +21,6 @@ import ShoppingProductTile from "./product-tile";
 import { useSearchParams } from "react-router-dom";
 import ProductsDetailsDialog from "./product-Details";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 function createSearchParamsHelper(filterParams) {
@@ -43,8 +42,8 @@ const ShoppingList = () => {
   const { productList, productDetails } = useSelector(
     (state) => state.shoppingProducts
   );
- 
 
+  const { cartItems} =useSelector(state=>state.shoppingCart)
 
   const { user } = useSelector((state) => state.auth);
 
@@ -53,6 +52,10 @@ const ShoppingList = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+
+  const [addingProductId, setAddingProductId] = useState(null);
+
+  const categorySearchParams = searchParams.get("category");
 
   function handleSort(value) {
     setSort(value);
@@ -84,28 +87,66 @@ const ShoppingList = () => {
     sessionStorage.setItem("filters", JSON.stringify(copyFilters));
   }
 
-  function handleAddToCart(getCurrentProductId) {
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
+    if (addingProductId) return; // Prevent multiple clicks
+  
+    setAddingProductId(getCurrentProductId); // Start loading
+  
+    const getCartItems = cartItems.items || [];
+  
+    const indexOfCurrentItem = getCartItems.findIndex(
+      (item) => item.productId === getCurrentProductId
+    );
+  
+    if (indexOfCurrentItem > -1) {
+      const currentQuantity = getCartItems[indexOfCurrentItem].quantity;
+  
+      // ⛔️ Check if adding one more exceeds available stock
+      if (currentQuantity + 1 > getTotalStock) {
+        toast.error(`Only ${getTotalStock} items are available in stock`, {
+          description: "You cannot add more than available stock.",
+        });
+        setAddingProductId(null);
+        return;
+      }
+    } else {
+      // ❗ If item not in cart yet, check if totalStock is even 1 or 0
+      if (getTotalStock < 1) {
+        toast.error("This product is out of stock.", {
+          description: "Cannot add this product to cart.",
+        });
+        setAddingProductId(null);
+        return;
+      }
+    }
+  
     dispatch(
       addToCart({
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
       })
-    ).then((data) =>{
-      if(data?.payload?.success){
-        dispatch(fetchCartItems(user?.id))
-        toast.success("Success", {
-          description: "The product was added to your inventory.",
-        });
-      }
-    });
+    )
+      .then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast.success("Success", {
+            description: "The product was added to your inventory.",
+          });
+        }
+      })
+      .finally(() => {
+        setAddingProductId(null);
+      });
   }
+  
+  
 
   useEffect(() => {
     const savedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
     setFilters(savedFilters);
     setSort("price-lowtohigh");
-  }, []);
+  }, [categorySearchParams]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -130,7 +171,7 @@ const ShoppingList = () => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  
+  console.log(productList,"product list")
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 md:p-6">
@@ -179,7 +220,7 @@ const ShoppingList = () => {
                   key={productItem._id}
                   product={productItem}
                   handleProductDetails={handleProductDetails}
-                  handleAddToCart={handleAddToCart}
+                  handleAddToCart={() => handleAddToCart(productItem._id, productItem.totalStock)}
                 />
               ))
             : null}
@@ -189,6 +230,7 @@ const ShoppingList = () => {
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
+        handleAddToCart={handleAddToCart}
       />
     </div>
   );

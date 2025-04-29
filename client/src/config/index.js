@@ -111,6 +111,11 @@ export const addProductFormElements = [
       path:'/shop/home'
   },
     {
+      id:'products',
+      label:'Products',
+      path:'/shop/list'
+  },
+    {
       id:'men',
       label:'Men',
       path:'/shop/list'

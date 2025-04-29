@@ -6,10 +6,11 @@ import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
 import { toast } from "sonner"
 
 
-const UserCartItemsCOntent = ({ cartItem }) => {
+const UserCartItemsContent = ({ cartItem }) => {
   const {user} = useSelector(state => state.auth);
+  const {cartItems} = useSelector(state => state.shoppingCart);
+  const {productList} = useSelector(state => state.shoppingProducts);
 
-  console.log(user, "user on cart")
   const dispatch = useDispatch();
 
   function handleCartItemDelete(getCartItem) {
@@ -18,31 +19,56 @@ const UserCartItemsCOntent = ({ cartItem }) => {
     ).then((data) => {
       if (data?.payload?.success) {
         toast.success("Success", {
-          description: "product deleted.",
+          description: "Product deleted.",
         });
       }
     });
   }
 
-
-  function handleQuantityUpdate(getCartItem, newQuantity) {
-    if (newQuantity <= 0) {
-      handleCartItemDelete(getCartItem);
-    } else {
-      dispatch(updateCartQuantity({
-        userId: user?.id,
-        productId: getCartItem?.productId,
-        quantity: newQuantity
-      }));
+  function handleQuantityUpdate(getCartItem, typeOfAction) {
+    const getCartItems = cartItems.items || [];
+  
+    if (typeOfAction === 'plus') {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCartItem?.productId
+      );
+      const getCurrentProductIndex = productList.findIndex(
+        (product) => product?._id === getCartItem?.productId
+      );
+      
+      if (getCurrentProductIndex === -1) {
+        toast.error("Error", {
+          description: "Product not found in product list."
+        });
+        return;
+      }
+  
+      const getTotalStock = productList[getCurrentProductIndex].totalStock;
+  
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error("warning", {
+            description: `Only ${getTotalStock} quantity available for this item`
+          });
+          return;
+        }
+      }
     }
+  
+    if (typeOfAction === 'minus' && getCartItem?.quantity <= 1) {
+      return;
+    }
+  
+    dispatch(updateCartQuantity({
+      userId: user?.id,
+      productId: getCartItem?.productId,
+      quantity:
+        typeOfAction === 'plus'
+          ? getCartItem?.quantity + 1
+          : getCartItem?.quantity - 1
+    }));
   }
-
-
-  console.log("Cart item structure:", cartItem);
-
-  console.log(typeof cartItem?.price, cartItem?.price,"price of cartitem");  // Check the type of price
-console.log(typeof cartItem?.salePrice, cartItem?.salePrice,"saleprice of cartitem");
-
 
   return (
     <div className="flex items-center space-x-4">
@@ -52,16 +78,16 @@ console.log(typeof cartItem?.salePrice, cartItem?.salePrice,"saleprice of cartit
         className="w-20 h-20 rounded object-cover"
       />
       <div className="flex-1">
-      <h3 className="font-extrabold">
-  {typeof cartItem?.title === 'string' ? cartItem?.title : 'No Title'}
-</h3>
+        <h3 className="font-extrabold">
+          {typeof cartItem?.title === 'string' ? cartItem?.title : 'No Title'}
+        </h3>
         <div className="flex items-center mt-1 space-x-2">
           <Button
             variant="outline"
             className="h-8 w-14 rounded-full"
             size="icon"
-            disabled={cartItem?.quantity === 1}
-            onClick={() => handleQuantityUpdate(cartItem, cartItem?.quantity - 1)}
+            disabled={cartItem?.quantity <= 1}
+            onClick={() => handleQuantityUpdate(cartItem, 'minus')}
           >
             <Minus className="w-4 h-4" />
             <span className="sr-only">Decrease</span>
@@ -71,16 +97,16 @@ console.log(typeof cartItem?.salePrice, cartItem?.salePrice,"saleprice of cartit
             variant="outline"
             className="h-8 w-14 rounded-full"
             size="icon"
-            onClick={() => handleQuantityUpdate(cartItem, cartItem?.quantity + 1)}
+            onClick={() => handleQuantityUpdate(cartItem, 'plus')}
           >
             <Plus className="w-4 h-4" />
-            <span className="sr-only">increase</span>
+            <span className="sr-only">Increase</span>
           </Button>
         </div>
       </div>
       <div className="flex flex-col items-end">
         <p className="font-semibold">
-          $
+          ₹
           {(
             (cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
             cartItem?.quantity
@@ -96,4 +122,4 @@ console.log(typeof cartItem?.salePrice, cartItem?.salePrice,"saleprice of cartit
   );
 };
 
-export default UserCartItemsCOntent;
+export default UserCartItemsContent;

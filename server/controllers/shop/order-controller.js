@@ -1,6 +1,6 @@
 const Order =require("../../models/Order.js");
 const Cart = require("../../models/Cart");
-// const  paypal =require("@paypal/checkout-server-sdk");
+const Product = require("../../models/Product")
 const  crypto =require("crypto");
 
 const Razorpay = require('razorpay');
@@ -58,24 +58,51 @@ const instance = new Razorpay({
 };
 
 
- const verifyRazorpayPayment = async (req, res) => {
+const verifyRazorpayPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
-      .createHmac("sha256","2L5N1SpMN7u5fTNUvphTwr1F")
+      .createHmac("sha256", "2L5N1SpMN7u5fTNUvphTwr1F")
       .update(body.toString())
       .digest("hex");
 
     if (expectedSignature === razorpay_signature) {
-    const updatedOrder=  await Order.findByIdAndUpdate(orderId, {
+      // First, get the order to access cart items
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        });
+      }
+      
+      // Update stock for each product
+      for(let item of order.cartItems) {
+        let product = await Product.findById(item.productId);
+
+        if(!product || product.totalStock < item.quantity) {
+          return res.status(404).json({
+            success: false,
+            message: 'Not enough stock for this product'
+            
+          });
+        }
+
+        product.totalStock -= item.quantity;
+        await product.save();
+      }
+      
+      // Update order status
+      const updatedOrder = await Order.findByIdAndUpdate(orderId, {
         paymentId: razorpay_payment_id,
         paymentStatus: "paid",
         orderStatus: "confirmed",
         orderUpdateDate: new Date(),
       });
 
+      // Delete the cart
       if (updatedOrder && updatedOrder.cartId) {
         await Cart.findByIdAndDelete(updatedOrder.cartId);
         console.log("🛒 Cart deleted from DB after payment success");

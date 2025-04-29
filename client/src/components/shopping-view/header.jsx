@@ -8,7 +8,7 @@ import {
   UserCog2,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../button";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,13 +29,16 @@ import { Label } from "../ui/label";
 
 function MenuItems() {
 
+  const [searchParams,setSearchParams] =useSearchParams()
+  
   const navigate =useNavigate()
 
+  const location =useLocation()
 
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
     const currentFIlter =
-      getCurrentMenuItem.id !== "home"
+      getCurrentMenuItem.id !== "home"  && getCurrentMenuItem.id !== "products"
         ? {
             category: [getCurrentMenuItem.id],
           }
@@ -43,7 +46,9 @@ function MenuItems() {
 
         sessionStorage.setItem('filters',JSON.stringify(currentFIlter))
 
-        navigate(getCurrentMenuItem.path)
+        location.pathname.includes('list') && currentFIlter !== null ? 
+        setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`)) :
+        navigate(getCurrentMenuItem.path) 
   }
   return (
     <nav className="flex flex-col  mb-3 lg:mb-0 lg:items-center justify-center gap-6 lg:flex-row  ">
@@ -165,3 +170,4 @@ const ShoppinHeader = () => {
 };
 
 export default ShoppinHeader;
+

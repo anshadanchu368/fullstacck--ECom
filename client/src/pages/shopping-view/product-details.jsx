@@ -17,9 +17,29 @@ const fadeSlide = {
 
 function ProductsDetailsDialog({ open, setOpen, productDetails }) {
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shoppingCart);
   const dispatch = useDispatch();
 
-  function handleAddToCart(getCurrentProductId) {
+  const isOutOfStock = productDetails?.totalStock === 0;
+
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(`Only ${getQuantity} can be added for this item`, {
+            description: "Please adjust your quantity.",
+          });
+          return;
+        }
+      }
+    }
+    if (isOutOfStock) return;
     dispatch(
       addToCart({
         userId: user?.id,
@@ -80,7 +100,9 @@ function ProductsDetailsDialog({ open, setOpen, productDetails }) {
                 <div className="flex items-center justify-between">
                   <p
                     className={`${
-                      productDetails?.salePrice > 0 ? "line-through text-gray-400" : "text-primary"
+                      productDetails?.salePrice > 0
+                        ? "line-through text-gray-400"
+                        : "text-primary"
                     } text-3xl font-bold`}
                   >
                     ₹{productDetails?.price}
@@ -100,50 +122,52 @@ function ProductsDetailsDialog({ open, setOpen, productDetails }) {
                   <span className="text-muted-foreground text-sm">4.5</span>
                 </div>
 
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                >
                   <Button
-                    onClick={() => handleAddToCart(productDetails?._id)}
+                    onClick={() =>
+                      handleAddToCart(
+                        productDetails?._id,
+                        productDetails?.totalStock
+                      )
+                    }
                     className="w-full mt-5"
+                    disabled={isOutOfStock}
+                    variant={isOutOfStock ? "secondary" : "default"}
                   >
-                    Add to Cart
+                    {isOutOfStock ? "Out of Stock" : "Add to Cart"}
                   </Button>
                 </motion.div>
 
                 <Separator className="mt-5 mb-5" />
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="max-h-[300px] overflow-auto"
-                >
-                  <h2 className="text-xl font-bold mb-3">Reviews</h2>
-                  <div className="grid gap-6">
-                    <div className="flex gap-4">
-                      <Avatar className="w-10 h-10 border">
-                        <AvatarFallback>SM</AvatarFallback>
-                      </Avatar>
-                      <div className="grid gap-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold">Hashim Anshad</h3>
-                        </div>
-                        <div className="flex gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <StarIcon key={i} className="w-4 h-4 fill-primary" />
-                          ))}
-                        </div>
-                        <p className="text-muted-foreground text-sm">
-                          This is an awesome product.
-                        </p>
+                <h2 className="text-xl font-bold mb-3">Reviews</h2>
+                <div className="grid gap-6">
+                  <div className="flex gap-4">
+                    <Avatar className="w-10 h-10 border">
+                      <AvatarFallback>SM</AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold">Hashim Anshad</h3>
                       </div>
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <StarIcon key={i} className="w-4 h-4 fill-primary" />
+                        ))}
+                      </div>
+                      <p className="text-muted-foreground text-sm">
+                        This is an awesome product.
+                      </p>
                     </div>
                   </div>
-
-                  <div className="mt-6 flex gap-2">
-                    <Input placeholder="Write a review" />
-                    <Button>Submit</Button>
-                  </div>
-                </motion.div>
+                </div>
+                <div className="mt-6 flex gap-2">
+                  <Input placeholder="Write a review" />
+                  <Button>Submit</Button>
+                </div>
               </motion.div>
             </>
           )}
