@@ -12,6 +12,7 @@ const shopOrderRouter = require("./routes/shop/order-routes");
 const shopSearchRouter =require('./routes/shop/search-routes')
 const adminOrdersRouter =require('./routes/admin/order-routes')
 const shopReviewRouter =require('./routes/shop/review-routes')
+const commonFeatureRouter =require('./routes/common/feature-routes')
 mongoose
   .connect(
     "mongodb+srv://Jasmine:MyUserPassword@cluster1.ksqolek.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster1"
@@ -48,6 +49,7 @@ app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search",shopSearchRouter)
 app.use("/api/shop/review",shopReviewRouter)
+app.use("/api/common/feature",commonFeatureRouter)
 
 app.listen(PORT, () => {
   console.log(`server is listening on ${PORT}`);

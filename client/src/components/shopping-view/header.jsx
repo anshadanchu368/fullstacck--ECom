@@ -311,7 +311,7 @@ const ShoppinHeader = () => {
                       className="flex items-center gap-2 group py-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <House className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors duration-300" />
+                      <img src ={logoo} className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors duration-300" />
                       <span className="text-xl sm:text-2xl font-extrabold tracking-tight">
                         <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                           Clap

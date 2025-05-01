@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -30,6 +29,7 @@ import {
   MapPin,
   ChevronFirst,
   ChevronLast,
+  Footprints,
 } from "lucide-react"
 import { fetchAllFilteredProducts, fetchProductDetails } from "@/store/shop/products-slice"
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice"
@@ -58,16 +58,16 @@ const categories = [
   { id: "women", label: "Women", icon: CloudLightning },
   { id: "kids", label: "Kids", icon: BabyIcon },
   { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "footwear", label: "Footwear", icon: Footprints },
 ]
 
 const brands = [
-  { id: "nike", label: "Nike", icon: Shirt },
-  { id: "adidas", label: "Adidas", icon: WashingMachine },
-  { id: "puma", label: "Puma", icon: ShoppingBasket },
-  { id: "levi", label: "Levi's", icon: Airplay },
-  { id: "zara", label: "Zara", icon: Images },
-  { id: "h&m", label: "H&M", icon: Heater },
+  { id: "nike", label: "Five sleeve" },
+  { id: "adidas", label: "Full sleeve"},
+  { id: "puma", label: "Hoodies" },
+  { id: "levi", label: "Jogger" },
+  { id: "zara", label: "Zara"},
+  { id: "h&m", label: "H&M" },
 ]
 
 const ShoppingHome = () => {
@@ -418,6 +418,9 @@ const ShoppingHome = () => {
                   alt={`Slide ${idx + 1}`}
                   className="w-full h-full object-cover"
                   style={{ display: "block" }}
+                  loading="lazy"
+                  srcSet={`${item.image}?w=300 300w, ${item.image}?w=600 600w, ${item.image}?w=900 900w`}
+                  sizes="(max-width: 600px) 300px, (max-width: 900px) 600px, 900px"
                 />
               </motion.div>
             ))}
@@ -646,42 +649,42 @@ const ShoppingHome = () => {
       </section>
 
       {/* Brands Section */}
-      <section ref={brandsRef} className="py-12 bg-gradient-to-b from-muted/30 to-background">
-        <div className="container mx-auto px-4 md:px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-8"
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Shop by Brand</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">Explore your favorite brands and discover new ones</p>
-          </motion.div>
+<section ref={brandsRef} className="py-12 bg-gradient-to-b from-muted/30 to-background">
+  <div className="container mx-auto px-4 md:px-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+      className="text-center mb-8"
+    >
+      <h2 className="text-2xl sm:text-3xl font-bold mb-2">Apparels</h2>
+      <p className="text-muted-foreground max-w-md mx-auto">Explore your comfort fit with our premium selection</p>
+    </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
-            {brands.map((brandsItem, index) => (
-              <motion.div
-                key={brandsItem.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card
-                  onClick={() => handleNaviagteToListingPage(brandsItem, "brand")}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group border-muted/50 h-full"
-                >
-                  <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full">
-                    <div className="bg-primary/10 p-3 rounded-full mb-3 sm:mb-4 group-hover:bg-primary/20 transition-colors duration-300">
-                      <brandsItem.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-                    </div>
-                    <span className="font-medium text-sm sm:text-base">{brandsItem.label}</span>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+      {brands.map((brandItem, index) => (
+        <motion.div
+          key={brandItem.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+        >
+          <Card
+            onClick={() => handleNaviagteToListingPage(brandItem, "brand")}
+            className="cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group border-muted/50 h-full flex items-center justify-center text-center"
+          >
+            <CardContent className="p-6">
+              <span className="font-medium text-lg sm:text-xl text-muted-foreground group-hover:text-primary transition-colors duration-300">
+                {brandItem.label}
+              </span>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* Newsletter Section */}
       <section className="py-12 bg-primary/5">
