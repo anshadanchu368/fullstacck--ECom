@@ -112,7 +112,7 @@ const UserCartWrapper = ({ cartItems, setOpenCartSheet, isMobile = false }) => {
                 className="mt-2 text-sky-600 border-sky-600 hover:bg-sky-50"
                 onClick={() => {
                   setOpenCartSheet(false)
-                  navigate("/shop/products")
+                  navigate("/shop/list")
                 }}
               >
                 Continue shopping
