@@ -63,7 +63,7 @@ const AdminOrderDetailsView = ({ orderData }) => {
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-6 overflow-y-auto max-h-[70vh]">
+    <div className="p-4 sm:p-6 space-y-6 ">
       {/* Order Info */}
       <div className="space-y-3 mt-4">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
