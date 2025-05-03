@@ -1,6 +1,5 @@
 import { Button } from "@/components/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { brandOptionsMap, categoryOptionsMap } from "@/config";
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -78,8 +77,8 @@ const ShoppingProductTile = ({ product, handleProductDetails, handleAddToCart })
 
           {/* Category and Brand */}
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{categoryOptionsMap[product?.category]}</span>
-            <span>{brandOptionsMap[product?.brand]}</span>
+            <span>{product?.category}</span>
+            <span>{product?.brand}</span>
           </div>
 
           {/* Price Section */}

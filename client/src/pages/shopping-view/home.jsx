@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -6,18 +7,12 @@ import { Button } from "@/components/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { toast } from "sonner"
 import {
-  Airplay,
   BabyIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   CloudLightning,
-  Heater,
-  Images,
   Shirt,
   ShirtIcon,
-  ShoppingBasket,
-  UmbrellaIcon,
-  WashingMachine,
   WatchIcon,
   ArrowRight,
   Instagram,
@@ -48,9 +43,9 @@ import {
 } from "@/components/ui/pagination"
 
 // Import images
-import imageOne from "../../assets/banner/bannerImage.png"
-import imageTwo from "../../assets/banner/image6.png"
-import imageThree from "../../assets/banner/image7.png"
+// import imageOne from "../../assets/banner/bannerImage.png"
+// import imageTwo from "../../assets/banner/image6.png"
+// import imageThree from "../../assets/banner/image7.png"
 import { getFeatureImage } from "@/store/common-slice"
 
 const categories = [
@@ -61,13 +56,13 @@ const categories = [
   { id: "footwear", label: "Footwear", icon: Footprints },
 ]
 
-const brands = [
-  { id: "nike", label: "Five sleeve" },
-  { id: "adidas", label: "Full sleeve"},
-  { id: "puma", label: "Hoodies" },
-  { id: "levi", label: "Jogger" },
-  { id: "zara", label: "Zara"},
-  { id: "h&m", label: "H&M" },
+const apparelItems = [
+  { id: "full-sleeve", label: "Full Sleeve T-shirts", icon: Shirt },
+  { id: "five-sleeve", label: "Five Sleeve T-shirts", icon: ShirtIcon },
+  { id: "hoodies", label: "Hoodies", icon: CloudLightning },
+  { id: "jogger", label: "Jogger Jeans", icon: Footprints },
+  { id: "jersey", label: "Jersey", icon: ShirtIcon },
+  { id: "casual", label: "Casual Wear", icon: Shirt },
 ]
 
 const ShoppingHome = () => {
@@ -97,7 +92,7 @@ const ShoppingHome = () => {
 
   const [addingProductId, setAddingProductId] = useState(null)
 
-  const slides = [imageOne, imageTwo, imageThree]
+  // const slides = [imageOne, imageTwo, imageThree]
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -648,43 +643,47 @@ const ShoppingHome = () => {
         </div>
       </section>
 
-      {/* Brands Section */}
-<section ref={brandsRef} className="py-12 bg-gradient-to-b from-muted/30 to-background">
-  <div className="container mx-auto px-4 md:px-6">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-8"
-    >
-      <h2 className="text-2xl sm:text-3xl font-bold mb-2">Apparels</h2>
-      <p className="text-muted-foreground max-w-md mx-auto">Explore your comfort fit with our premium selection</p>
-    </motion.div>
-
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
-      {brands.map((brandItem, index) => (
-        <motion.div
-          key={brandItem.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-        >
-          <Card
-            onClick={() => handleNaviagteToListingPage(brandItem, "brand")}
-            className="cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group border-muted/50 h-full flex items-center justify-center text-center"
+      {/* Apparels Section */}
+      <section ref={brandsRef} className="py-12 bg-gradient-to-b from-muted/30 to-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
           >
-            <CardContent className="p-6">
-              <span className="font-medium text-lg sm:text-xl text-muted-foreground group-hover:text-primary transition-colors duration-300">
-                {brandItem.label}
-              </span>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Apparels</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Explore your comfort fit with our premium selection
+            </p>
+          </motion.div>
 
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+            {apparelItems.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card
+                  onClick={() => handleNaviagteToListingPage(item, "brand")}
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group border-muted/50 h-full"
+                >
+                  <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                    <div className="bg-primary/10 p-3 rounded-full mb-3 group-hover:bg-primary/20 transition-colors duration-300">
+                      <item.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <span className="font-medium text-sm sm:text-base group-hover:text-primary transition-colors duration-300">
+                      {item.label}
+                    </span>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Newsletter Section */}
       <section className="py-12 bg-primary/5">

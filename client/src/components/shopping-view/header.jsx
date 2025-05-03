@@ -1,4 +1,3 @@
-"use client"
 
 import { HomeIcon as House, LogOut, MenuIcon, ShoppingCart, UserCog2, ChevronDown, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -319,12 +318,12 @@ const ShoppinHeader = () => {
                         <span className="text-muted-foreground">Studio</span>
                       </span>
                     </Link>
-                    <SheetClose asChild>
+                    {/* <SheetClose asChild>
                       <Button variant="ghost" size="icon" className="rounded-full">
                         <X className="h-4 w-4" />
                         <span className="sr-only">Close</span>
                       </Button>
-                    </SheetClose>
+                    </SheetClose> */}
                   </div>
                   <div className="space-y-1.5 pt-4">
                     <MenuItems />
