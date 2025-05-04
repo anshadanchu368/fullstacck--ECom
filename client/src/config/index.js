@@ -67,7 +67,7 @@ export const addProductFormElements = [
   },
   {
     label: "Apparel Type",
-    name: "apparelType",
+    name: "apparel",
     componentType: "select",
     options: [
       { id: "full-sleeve", label: "Full Sleeve T-shirts" },

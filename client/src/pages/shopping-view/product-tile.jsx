@@ -78,7 +78,7 @@ const ShoppingProductTile = ({ product, handleProductDetails, handleAddToCart })
           {/* Category and Brand */}
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>{product?.category}</span>
-            <span>{product?.brand}</span>
+            <span>{product?.apparel}</span>
           </div>
 
           {/* Price Section */}

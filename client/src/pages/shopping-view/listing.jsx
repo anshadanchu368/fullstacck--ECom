@@ -174,7 +174,12 @@ const ShoppingList = () => {
 
   useEffect(() => {
     if (filters !== null && sort !== null) {
+ 
+      console.log("Dispatching filters:", filters)
+      console.log("Dispatching sort:", sort)
       dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }))
+
+     
     }
   }, [dispatch, filters, sort])
 
