@@ -50,7 +50,7 @@ function ProductsDetailsDialog({ open, setOpen, productDetails }) {
     }
 
     if (isOutOfStock) return;
-
+ 
     dispatch(
       addToCart({
         userId: user?.id,

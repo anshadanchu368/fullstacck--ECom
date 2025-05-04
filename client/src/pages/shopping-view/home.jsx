@@ -47,6 +47,7 @@ import {
 // import imageTwo from "../../assets/banner/image6.png"
 // import imageThree from "../../assets/banner/image7.png"
 import { getFeatureImage } from "@/store/common-slice"
+import ImageCarousel from "./imageCarousel"
 
 const categories = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -275,7 +276,7 @@ const ShoppingHome = () => {
           }
 
           slideTimerRef.current = setInterval(() => {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % (featureImageList.length || slides.length))
+            setCurrentSlide((prevSlide) => (prevSlide + 1) % (featureImageList.length ))
           }, 5000)
         })
         .catch((error) => {
@@ -357,24 +358,24 @@ const ShoppingHome = () => {
     dispatch(getFeatureImage())
   }, [dispatch])
 
-  useEffect(() => {
-    if (featureImageList.length > 0) {
-      // Create an array to hold all image loading promises
-      const imagePromises = featureImageList.map((item) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image()
-          img.onload = () => resolve(img)
-          img.onerror = () => reject(new Error(`Failed to load image: ${item.image}`))
-          img.src = item.image
-        })
-      })
+  // useEffect(() => {
+  //   if (featureImageList.length > 0) {
+  //     // Create an array to hold all image loading promises
+  //     const imagePromises = featureImageList.map((item) => {
+  //       return new Promise((resolve, reject) => {
+  //         const img = new Image()
+  //         img.onload = () => resolve(img)
+  //         img.onerror = () => reject(new Error(`Failed to load image: ${item.image}`))
+  //         img.src = item.image
+  //       })
+  //     })
 
-      // Use Promise.all to wait for all images to load
-      Promise.all(imagePromises).catch((error) => {
-        console.error("Error preloading images:", error)
-      })
-    }
-  }, [featureImageList])
+  //     // Use Promise.all to wait for all images to load
+  //     Promise.all(imagePromises).catch((error) => {
+  //       console.error("Error preloading images:", error)
+  //     })
+  //   }
+  // }, [featureImageList])
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -383,16 +384,16 @@ const ShoppingHome = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent z-10"></div>
 
         {/* Preload all images off-screen */}
-        <div className="sr-only" aria-hidden="true">
+        {/* <div className="sr-only" aria-hidden="true">
           {featureImageList &&
             featureImageList.length > 0 &&
             featureImageList.map((item, idx) => (
               <img key={`preload-${idx}`} src={item.image || "/placeholder.svg"} alt="" />
             ))}
-        </div>
+        </div> */}
 
         {/* Main carousel */}
-        <div className="absolute inset-0">
+        {/* <div className="absolute inset-0">
           {featureImageList &&
             featureImageList.length > 0 &&
             featureImageList.map((item, idx) => (
@@ -419,7 +420,9 @@ const ShoppingHome = () => {
                 />
               </motion.div>
             ))}
-        </div>
+        </div> */}
+
+        <ImageCarousel featureImageList={featureImageList}/>
 
         {/* Hero Content */}
         <div className="absolute inset-0 z-20 flex items-center left-10">
@@ -458,7 +461,7 @@ const ShoppingHome = () => {
             : null}
         </div>
 
-        <Button
+        {/* <Button
           onClick={() => {
             const newIndex =
               (currentSlide - 1 + (featureImageList?.length || slides.length)) %
@@ -481,7 +484,7 @@ const ShoppingHome = () => {
           className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 z-20 h-8 w-8 sm:h-10 sm:w-10 rounded-full shadow-md"
         >
           <ChevronRightIcon className="w-4 h-4" />
-        </Button>
+        </Button> */}
       </div>
 
       {/* Categories Section */}

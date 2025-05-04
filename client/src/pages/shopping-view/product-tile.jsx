@@ -89,7 +89,7 @@ const ShoppingProductTile = ({ product, handleProductDetails, handleAddToCart })
               }`}
             >
               ₹{product?.price}
-            </span>
+            </span> 
             {isOnSale && (
               <span className="text-xl font-bold text-primary">
                 ₹{product?.salePrice}

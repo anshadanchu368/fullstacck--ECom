@@ -17,10 +17,10 @@ export const addToCart = createAsyncThunk(
         productId,
         quantity,
       });
-      console.log("✅ Add to Cart Response:", response.data);
+      console.log(" Add to Cart Response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("❌ Add to Cart Error:", error);
+      console.error(" Add to Cart Error:", error);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -32,10 +32,10 @@ export const fetchCartItems = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`http://localhost:5000/api/shop/cart/get/${userId}`);
-      console.log("✅ Fetch Cart Items Response:", response.data);
+      console.log(" Fetch Cart Items Response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("❌ Fetch Cart Error:", error);
+      console.error(" Fetch Cart Error:", error);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -47,10 +47,10 @@ export const deleteCartItem = createAsyncThunk(
   async ({ userId, productId }, { rejectWithValue }) => {
     try {
       const response = await axios.delete(`http://localhost:5000/api/shop/cart/${userId}/${productId}`);
-      console.log("✅ Delete Cart Item Response:", response.data);
+      console.log(" Delete Cart Item Response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("❌ Delete Cart Error:", error);
+      console.error(" Delete Cart Error:", error);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
