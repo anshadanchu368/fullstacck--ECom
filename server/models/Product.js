@@ -5,7 +5,6 @@ const ProductSchema = new mongoose.Schema({
     title: String,
     description: String,
     category: String,
-    brand: String,
     apparel: String, // This field will store one of: 'full-sleeve', 'five-sleeve', 'hoodies', etc.
     price: Number,
     salePrice: Number,

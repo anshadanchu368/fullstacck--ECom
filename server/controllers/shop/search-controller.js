@@ -25,7 +25,7 @@ const searchProducts = async(req,res)=>{
                     category: regEx
                 },
                 {
-                    brand: regEx
+                    apparel: regEx
                 },
             ]
          }

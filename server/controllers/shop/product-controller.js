@@ -2,7 +2,11 @@ const Product = require("../../models/Product");
 
 const getFilteredProducts = async (req, res) => {
   try {
+    console.log("Raw req.query:", req.query);
     const { category = [], apparel = [], sortBy = "price-lowtohigh" } = req.query;
+
+    console.log("Parsed category param:", category);
+console.log("Parsed apparel param:", apparel);
 
     let filters = {};
 
@@ -41,6 +45,8 @@ const getFilteredProducts = async (req, res) => {
       success: true,
       data: products,
     });
+
+    console.log("Final filters applied to DB:", filters);
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -49,6 +55,7 @@ const getFilteredProducts = async (req, res) => {
     });
   }
 };
+
 const getProductDetails = async (req, res) => {
   try {
        const {id} =req.params
