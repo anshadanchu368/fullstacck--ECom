@@ -116,6 +116,26 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const googleLogin = createAsyncThunk(
+  '/auth/google-login',
+  async (token, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/auth/google-login',
+        { token },
+        { withCredentials: true }
+      );
+      return res.data;
+    } catch (err) {
+      console.error('Google login error:', err);
+      return rejectWithValue(
+        err.response?.data?.message || 'Google login failed'
+      );
+    }
+  }
+);
+
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -199,6 +219,19 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         console.log('Reset password rejected with payload:', action.payload);
+      }).addCase(googleLogin.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.success ? action.payload.user : null;
+        state.isAuthenticated = action.payload.success ? true : false;
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        console.log('Google login rejected with payload:', action.payload);
       })
   },
 });
