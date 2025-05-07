@@ -23,23 +23,28 @@ const CommonForm = ({
     let element = null;
     const value = formData[getControlItem.name] || "";
     switch (getControlItem.componentType) {
-      case "input":
-        element = (
-          <Input
-            type={getControlItem.type}
-            name={getControlItem.name}
-            id={getControlItem.name}
-            placeholder={getControlItem.placeholder}
-            value={value}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: e.target.value,
-              })
-            }
-          />
-        );
-        break;
+     case "input":
+  element = (
+    <div className="relative">
+      <Input
+        type={getControlItem.type}
+        name={getControlItem.name}
+        id={getControlItem.name}
+        placeholder={getControlItem.placeholder}
+        value={value}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            [getControlItem.name]: e.target.value,
+          })
+        }
+        className="pr-10" // make space for icon
+      />
+      {getControlItem.rightIcon}
+    </div>
+  );
+  break;
+
       case "select":
         element = (
           <Select

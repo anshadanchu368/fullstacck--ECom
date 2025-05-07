@@ -542,35 +542,34 @@ const ShoppingHome = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 min-h-[500px]">
-            {paginatedProducts && paginatedProducts.length > 0
-              ? paginatedProducts.map((productItem, index) => (
-                  <motion.div
-                    key={productItem._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.8) }}
-                  >
-                    <ShoppingProductTile
-                      handleProductDetails={handleProductDetails}
-                      product={productItem}
-                      handleAddToCart={() => handleAddToCart(productItem._id, productItem.totalStock)}
-                    />
-                  </motion.div>
-                ))
-              : Array(4)
-                  .fill(0)
-                  .map((_, index) => (
-                    <motion.div
-                      key={`skeleton-${index}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="bg-muted/50 rounded-lg h-[300px] animate-pulse"
-                    />
-                  ))}
-          </div>
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 min-h-[500px] bg-gradient-to-br ">
+  {paginatedProducts && paginatedProducts.length > 0
+    ? paginatedProducts.map((productItem, index) => (
+        <motion.div
+          key={productItem._id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.8) }}
+        >
+          <ShoppingProductTile
+            handleProductDetails={handleProductDetails}
+            product={productItem}
+            handleAddToCart={() => handleAddToCart(productItem._id, productItem.totalStock)}
+          />
+        </motion.div>
+      ))
+    : Array(4)
+        .fill(0)
+        .map((_, index) => (
+          <motion.div
+            key={`skeleton-${index}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="bg-slate-800/40 backdrop-blur-sm rounded-lg h-[300px] animate-pulse border border-indigo-400/20 shadow-inner shadow-indigo-500/10"
+          />
+        ))}
+</div>
           {/* Pagination */}
           {productList && productList.length > productsPerPage && (
             <div className="mt-8">

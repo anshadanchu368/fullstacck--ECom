@@ -1,119 +1,158 @@
-import { Button } from "@/components/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import React from "react";
-import { motion } from "framer-motion";
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
+import { ShoppingCart } from 'lucide-react'
 
 const tileVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: 20 },
+  hidden: { opacity: 0, scale: 0.95 },
   visible: {
     opacity: 1,
     scale: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
   },
-};
+}
 
 const labelVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.2 } },
-};
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.2 } },
+}
 
-const ShoppingProductTile = ({ product, handleProductDetails, handleAddToCart }) => {
-  const isOutOfStock = product?.totalStock === 0;
-  const isLowStock = product?.totalStock > 0 && product?.totalStock < 10;
-  const isOnSale = product?.salePrice > 0;
+const ShoppingProductTile = ({ product, handleProductDetails, handleAddToCart, isLoading }) => {
+  const isOutOfStock = product?.totalStock === 0
+  const isLowStock = product?.totalStock > 0 && product?.totalStock < 10
+  const isOnSale = product?.salePrice > 0
 
   return (
-    <motion.div
-      variants={tileVariants}
-      initial="hidden"
-      animate="visible"
-      whileHover={{ scale: 1.02 }}
-      className="w-full max-w-xs mx-auto"
-    >
-      <Card className="overflow-hidden rounded-2xl shadow-md hover:shadow-2xl transition duration-300 bg-white">
-        {/* Product Image */}
+    <motion.div variants={tileVariants} initial="hidden" animate="visible" whileHover={{ y: -8 }} className="w-full">
+      <div className="group relative bg-white overflow-hidden">
+        {/* Contemporary Cut Design Element - Top Right Diagonal Cut */}
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gray-50 z-0 transform rotate-45 translate-x-12 -translate-y-12"></div>
+
+        {/* Product Image with Overlay */}
         <div
           onClick={() => handleProductDetails(product?._id)}
-          className="cursor-pointer relative group"
+          className="relative cursor-pointer overflow-hidden aspect-[3/4]"
         >
-          <motion.img
-            src={product?.image}
-            alt={product?.title}
-            className="w-full h-[280px] object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          <div className="w-full h-full overflow-hidden">
+            <motion.img
+              src={product?.image}
+              alt={product?.title}
+              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            />
 
-          {/* Custom Status Label */}
+            {/* Hover Overlay */}
+            <div className="absolute inset-0  bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+
+            {/* Quick View Button on Hover */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
+              <Button
+                variant="outline"
+                className="w-full bg-white hover:bg-gray-50 text-gray-900 border-0 shadow-lg"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleProductDetails(product?._id)
+                }}
+              >
+                Quick View
+              </Button>
+            </div>
+          </div>
+
+          {/* Status Label */}
           {(isOutOfStock || isLowStock || isOnSale) && (
-            <motion.div
-              variants={labelVariants}
-              initial="hidden"
-              animate="visible"
-              className="absolute top-4 left-4"
-            >
+            <motion.div variants={labelVariants} initial="hidden" animate="visible" className="absolute top-4 left-0">
               <div
-                className={`px-3 py-1 text-xs font-bold rounded-full shadow-md 
-                  ${isOutOfStock
-                    ? "bg-red-100 text-red-700"
-                    : isLowStock
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-green-100 text-green-700"
+                className={`py-1 pl-3 pr-4 text-xs font-medium shadow-sm 
+                  ${
+                    isOutOfStock
+                      ? "bg-gray-900 text-white"
+                      : isLowStock
+                        ? "bg-amber-500 text-white"
+                        : "bg-teal-500 text-white"
                   }
                 `}
+                style={{
+                  clipPath: "polygon(0 0, 100% 0, 95% 100%, 0% 100%)"
+                }}
               >
-                {isOutOfStock
-                  ? "Out of Stock"
-                  : isLowStock
-                  ? `Only ${product.totalStock} left`
-                  : "Sale"}
+                {isOutOfStock ? "Out of Stock" : isLowStock ? `${product.totalStock} left` : "Sale"}
               </div>
             </motion.div>
           )}
         </div>
 
-        {/* Product Details */}
-        <CardContent className="p-4 space-y-3">
-          <h2 className="text-lg font-bold line-clamp-2">{product?.title}</h2>
-
-          {/* Category and Brand */}
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{product?.category}</span>
-            <span>{product?.apparel}</span>
+        {/* Product Info with Contemporary Cut Design */}
+        <div className="relative z-10 p-4 pb-6">
+          {/* Category Tag */}
+          <div className="mb-2">
+            <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">{product?.category}</span>
           </div>
 
-          {/* Price Section */}
-          <div className="flex items-center gap-3">
-            <span
-              className={`text-xl font-semibold ${
-                isOnSale ? "line-through text-gray-400" : "text-primary"
-              }`}
-            >
-              ₹{product?.price}
-            </span> 
-            {isOnSale && (
-              <span className="text-xl font-bold text-primary">
-                ₹{product?.salePrice}
+          {/* Title */}
+          <h2 className="font-bold text-base text-gray-900 mb-1 line-clamp-1">{product?.title}</h2>
+
+          {/* Description */}
+          <p className="text-xs text-gray-500 line-clamp-1 mb-3">{product?.description}</p>
+
+          {/* Price Section with Contemporary Design */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-2">
+              {isOnSale && <span className="text-lg font-bold text-gray-900">₹{product?.salePrice}</span>}
+              <span
+                className={`${isOnSale ? "text-sm line-through text-gray-400" : "text-lg font-bold text-gray-900"}`}
+              >
+                ₹{product?.price}
               </span>
-            )}
+              {isOnSale && (
+                <span className="text-xs font-medium text-teal-600 bg-teal-50 px-1.5 py-0.5">
+                  {Math.round(((product?.price - product?.salePrice) / product?.price) * 100)}%
+                </span>
+              )}
+            </div>
+
+            {/* Add to Cart Button - Contemporary Style */}
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button
+                size="icon"
+                onClick={() => handleAddToCart(product?._id, product?.totalStock)}
+                disabled={isOutOfStock || isLoading}
+                className={`rounded-none h-10 w-10 ${
+                  isOutOfStock ? "bg-gray-100 text-gray-400" : "bg-gray-900 hover:bg-gray-800 text-white"
+                }`}
+                aria-label="Add to cart"
+              >
+                {isLoading ? (
+                  <svg
+                    className="animate-spin h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  <ShoppingCart className="h-4 w-4" />
+                )}
+              </Button>
+            </motion.div>
           </div>
-        </CardContent>
-
-        {/* Add to Cart Button */}
-        <CardFooter>
-          <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }} className="w-full">
-            <Button
-              onClick={() => handleAddToCart(product?._id, product?.totalStock)}
-              className="w-full text-base font-semibold"
-              disabled={isOutOfStock}
-              variant={isOutOfStock ? "secondary" : "default"}
-            >
-              {isOutOfStock ? "Unavailable" : "Add to Cart"}
-            </Button>
-          </motion.div>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default ShoppingProductTile;
+export default ShoppingProductTile

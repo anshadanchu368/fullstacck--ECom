@@ -23,6 +23,8 @@ import { checkAuth } from "./store/auth-slice";
 import { useEffect } from "react";
 import { Skeleton } from "./components/ui/skeleton";
 import SearchProducts from "./pages/shopping-view/search";
+import ForgotPasswordForm from "./pages/auth/ForgotPassword";
+import ResetPasswordForm from "./pages/auth/ResetPassword";
 
 
 function App() {
@@ -55,11 +57,15 @@ function App() {
             element={
               <CheckAuth isAuthenticated={isAuthenticated} user={user}>
                 <Authlayout />
+                 
               </CheckAuth>
             }
           >
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPasswordForm />} />
+            <Route path="reset-password/:token" element={<ResetPasswordForm />} />
+            
           </Route>
           <Route path="/admin" element={
             <CheckAuth isAuthenticated={isAuthenticated} user={user}>

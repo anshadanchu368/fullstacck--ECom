@@ -150,7 +150,7 @@ const ShoppingCheckout = () => {
             <span className="text-white font-medium">Checkout</span>
           </div>
         </div>
-        <img src={img || "/placeholder.svg"} alt="Banner" className="h-full w-full object-cover object-center" />
+        <div  className="h-full w-full bg-black" />
       </div>
 
       {/* Checkout Steps */}
