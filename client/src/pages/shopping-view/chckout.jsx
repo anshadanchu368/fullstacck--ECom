@@ -126,10 +126,16 @@ const ShoppingCheckout = () => {
       }
 
       const rzp = new window.Razorpay(options)
+      rzp.on("payment.failed", (response) => {
+        console.error("Payment failed:", response.error)
+        toast.error("Payment failed", {
+          description: response.error.description || "Transaction could not be completed",
+        })
+      })
       rzp.open()
     } catch (error) {
       console.error("Error during Razorpay checkout:", error)
-      toast.error("Checkout failed", {
+      toast.error("error", {
         description: "There was an error processing your payment",
       })
     } finally {

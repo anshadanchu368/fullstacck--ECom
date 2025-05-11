@@ -131,7 +131,7 @@ export default function LoginForm() {
       >
         <div className="text-center">
           <div className="">
-            <img src={logoo} className="h-6 w-6 mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4 " />
+            <img src={logoo} alt="clapstudio" className="h-6 w-6 mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4 " />
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             Welcome Back

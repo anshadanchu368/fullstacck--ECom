@@ -1,31 +1,30 @@
-import React from 'react';
-import { GoogleLogin } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
-import { checkAuth, googleLogin } from '@/store/auth-slice';
+import { googleLogin } from '@/store/auth-slice';
+import { GoogleLogin } from '@react-oauth/google'; // Assuming you're using this
+import { toast } from 'sonner';
 
-const GoogleLoginButton = () => {
+export default function GoogleLoginButton() {
   const dispatch = useDispatch();
 
   const handleSuccess = async (credentialResponse) => {
-    try {
-      const { credential } = credentialResponse;  // This is the ID token (JWT)
+    const token = credentialResponse.credential;
+    if (!token) return toast.error("Google token missing");
 
-      dispatch(googleLogin(credential)).then(() => {
-        dispatch(checkAuth());
+    dispatch(googleLogin(token))
+      .unwrap()
+      .then((res) => {
+        toast.success("Google login successful!");
+        // Optional: redirect or close modal
+      })
+      .catch((err) => {
+        toast.error(err || "Google login failed");
       });
-      
-    } catch (err) {
-      console.error('Google login error:', err);
-    }
   };
 
   return (
     <GoogleLogin
       onSuccess={handleSuccess}
-      onError={() => console.log('Google Login Failed')}
+      onError={() => toast.error("Google Sign-In failed")}
     />
   );
-};
-
-export default GoogleLoginButton;
+}

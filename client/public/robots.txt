@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /api/
+Allow: /
+
+Sitemap: https://clapstudio.com/sitemap.xml

@@ -42,12 +42,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-// Import images
-// import imageOne from "../../assets/banner/bannerImage.png"
-// import imageTwo from "../../assets/banner/image6.png"
-// import imageThree from "../../assets/banner/image7.png"
+
 import { getFeatureImage } from "@/store/common-slice"
 import ImageCarousel from "./imageCarousel"
+import NewsletterForm from "@/components/shopping-view/NewsLetter"
 
 const categories = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -68,20 +66,13 @@ const apparelItems = [
 
 const ShoppingHome = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [isIntersecting, setIsIntersecting] = useState({
-    categories: false,
-    featured: false,
-    brands: false,
-  })
+ 
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1)
   const [productsPerPage] = useState(8)
   const [paginatedProducts, setPaginatedProducts] = useState([])
 
-  const categoryRef = useRef(null)
-  const featuredRef = useRef(null)
-  const brandsRef = useRef(null)
 
   const { productList, productDetails } = useSelector((state) => state.shoppingProducts)
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
@@ -98,10 +89,7 @@ const ShoppingHome = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  // First, add these new state variables near the top of the component where other state is defined:
-  const [isImageLoading, setIsImageLoading] = useState(true)
-  const [preloadedImages, setPreloadedImages] = useState({})
-  const slideTimerRef = useRef(null)
+
 
   // Pagination logic
   useEffect(() => {
@@ -172,48 +160,7 @@ const ShoppingHome = () => {
     return pageNumbers
   }
 
-  // Intersection Observer setup
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.1,
-    }
-
-    const categoryObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting((prev) => ({ ...prev, categories: true }))
-        }
-      })
-    }, observerOptions)
-
-    const featuredObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting((prev) => ({ ...prev, featured: true }))
-        }
-      })
-    }, observerOptions)
-
-    const brandsObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting((prev) => ({ ...prev, brands: true }))
-        }
-      })
-    }, observerOptions)
-
-    if (categoryRef.current) categoryObserver.observe(categoryRef.current)
-    if (featuredRef.current) featuredObserver.observe(featuredRef.current)
-    if (brandsRef.current) brandsObserver.observe(brandsRef.current)
-
-    return () => {
-      if (categoryRef.current) categoryObserver.unobserve(categoryRef.current)
-      if (featuredRef.current) featuredObserver.unobserve(featuredRef.current)
-      if (brandsRef.current) brandsObserver.unobserve(brandsRef.current)
-    }
-  }, [])
+  
 
   function handleNaviagteToListingPage(getCurrentItem, section) {
     sessionStorage.removeItem("filters")
@@ -229,68 +176,9 @@ const ShoppingHome = () => {
     if (productDetails !== null) setOpenDetailsDialog(true)
   }, [productDetails])
 
-  useEffect(() => {
-    // Clear any existing timer when component unmounts or dependencies change
-    return () => {
-      if (slideTimerRef.current) {
-        clearInterval(slideTimerRef.current)
-      }
-    }
-  }, [])
 
-  useEffect(() => {
-    if (featureImageList && featureImageList.length > 0) {
-      setIsImageLoading(true)
 
-      // Create an object to track loaded images
-      const imageCache = {}
-
-      // Preload all images
-      const preloadPromises = featureImageList.map((item, index) => {
-        return new Promise((resolve) => {
-          const img = new Image()
-
-          img.onload = () => {
-            imageCache[index] = true
-            resolve(true)
-          }
-
-          img.onerror = () => {
-            console.error(`Failed to load image: ${item.image}`)
-            resolve(false)
-          }
-
-          img.src = item.image
-        })
-      })
-
-      // When all images are loaded, start the carousel
-      Promise.all(preloadPromises)
-        .then(() => {
-          setPreloadedImages(imageCache)
-          setIsImageLoading(false)
-
-          // Only start the timer after images are loaded
-          if (slideTimerRef.current) {
-            clearInterval(slideTimerRef.current)
-          }
-
-          slideTimerRef.current = setInterval(() => {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % (featureImageList.length ))
-          }, 5000)
-        })
-        .catch((error) => {
-          console.error("Error preloading images:", error)
-          setIsImageLoading(false)
-        })
-    }
-
-    return () => {
-      if (slideTimerRef.current) {
-        clearInterval(slideTimerRef.current)
-      }
-    }
-  }, [featureImageList])
+ 
 
   useEffect(() => {
     dispatch(
@@ -358,24 +246,7 @@ const ShoppingHome = () => {
     dispatch(getFeatureImage())
   }, [dispatch])
 
-  // useEffect(() => {
-  //   if (featureImageList.length > 0) {
-  //     // Create an array to hold all image loading promises
-  //     const imagePromises = featureImageList.map((item) => {
-  //       return new Promise((resolve, reject) => {
-  //         const img = new Image()
-  //         img.onload = () => resolve(img)
-  //         img.onerror = () => reject(new Error(`Failed to load image: ${item.image}`))
-  //         img.src = item.image
-  //       })
-  //     })
-
-  //     // Use Promise.all to wait for all images to load
-  //     Promise.all(imagePromises).catch((error) => {
-  //       console.error("Error preloading images:", error)
-  //     })
-  //   }
-  // }, [featureImageList])
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -383,45 +254,9 @@ const ShoppingHome = () => {
       <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden bg-background">
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent z-10"></div>
 
-        {/* Preload all images off-screen */}
-        {/* <div className="sr-only" aria-hidden="true">
-          {featureImageList &&
-            featureImageList.length > 0 &&
-            featureImageList.map((item, idx) => (
-              <img key={`preload-${idx}`} src={item.image || "/placeholder.svg"} alt="" />
-            ))}
-        </div> */}
+      
 
-        {/* Main carousel */}
-        {/* <div className="absolute inset-0">
-          {featureImageList &&
-            featureImageList.length > 0 &&
-            featureImageList.map((item, idx) => (
-              <motion.div
-                key={`slide-${idx}`}
-                className="absolute inset-0"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: currentSlide === idx ? 1 : 0,
-                  zIndex: currentSlide === idx ? 1 : 0,
-                }}
-                transition={{
-                  opacity: { duration: 0.7, ease: "easeInOut" },
-                }}
-              >
-                <img
-                  src={item.image || "/placeholder.svg"}
-                  alt={`Slide ${idx + 1}`}
-                  className="w-full h-full object-cover"
-                  style={{ display: "block" }}
-                  loading="lazy"
-                  srcSet={`${item.image}?w=300 300w, ${item.image}?w=600 600w, ${item.image}?w=900 900w`}
-                  sizes="(max-width: 600px) 300px, (max-width: 900px) 600px, 900px"
-                />
-              </motion.div>
-            ))}
-        </div> */}
-
+     
         <ImageCarousel featureImageList={featureImageList}/>
 
         {/* Hero Content */}
@@ -488,11 +323,11 @@ const ShoppingHome = () => {
       </div>
 
       {/* Categories Section */}
-      <section ref={categoryRef} className="py-12 bg-gradient-to-b from-background to-muted/30">
+      <section  className="py-12 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={isIntersecting.categories ? { opacity: 1, y: 0 } : {}}
+            animate={{ opacity: 1, y: 0 } }
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
@@ -507,7 +342,7 @@ const ShoppingHome = () => {
               <motion.div
                 key={categoryItem.id}
                 initial={{ opacity: 0, y: 20 }}
-                animate={isIntersecting.categories ? { opacity: 1, y: 0 } : {}}
+                animate={ { opacity: 1, y: 0 } }
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card
@@ -528,11 +363,11 @@ const ShoppingHome = () => {
       </section>
 
       {/* Featured Products Section */}
-      <section ref={featuredRef} className="py-12 bg-background">
+      <section  className="py-12 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+            animate={ { opacity: 1, y: 0 } }
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
@@ -548,7 +383,7 @@ const ShoppingHome = () => {
         <motion.div
           key={productItem._id}
           initial={{ opacity: 0, y: 20 }}
-          animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+          animate={{ opacity: 1, y: 0 } }
           transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.8) }}
         >
           <ShoppingProductTile
@@ -564,7 +399,7 @@ const ShoppingHome = () => {
           <motion.div
             key={`skeleton-${index}`}
             initial={{ opacity: 0, y: 20 }}
-            animate={isIntersecting.featured ? { opacity: 1, y: 0 } : {}}
+            animate={ { opacity: 1, y: 0 } }
             transition={{ duration: 0.5, delay: index * 0.1 }}
             className="bg-slate-800/40 backdrop-blur-sm rounded-lg h-[300px] animate-pulse border border-indigo-400/20 shadow-inner shadow-indigo-500/10"
           />
@@ -646,11 +481,11 @@ const ShoppingHome = () => {
       </section>
 
       {/* Apparels Section */}
-      <section ref={brandsRef} className="py-12 bg-gradient-to-b from-muted/30 to-background">
+      <section  className="py-12 bg-gradient-to-b from-muted/30 to-background">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+            animate={ { opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
@@ -665,7 +500,7 @@ const ShoppingHome = () => {
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 20 }}
-                animate={isIntersecting.brands ? { opacity: 1, y: 0 } : {}}
+                animate={{ opacity: 1, y: 0 } }
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card
@@ -688,29 +523,8 @@ const ShoppingHome = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 bg-primary/5">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4">Stay Updated</h2>
-              <p className="text-muted-foreground mb-6">
-                Subscribe to our newsletter for exclusive offers and the latest fashion trends
-              </p>
-              <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-                <Input type="email" placeholder="Enter your email" className="flex-1" />
-                <Button className="group">
-                  Subscribe
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+      <section >
+      <NewsletterForm/>
       </section>
 
       {/* Footer */}
