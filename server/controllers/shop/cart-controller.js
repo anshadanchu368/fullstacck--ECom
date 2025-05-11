@@ -68,9 +68,11 @@ const fetchCartItems = async (req, res) => {
     });
 
     if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: " Cart not found",
+      return res.status(200).json({
+        success: true,
+        data: {
+          items: [],
+        },
       });
     }
 
@@ -121,9 +123,11 @@ const updateCartItemQuantity = async (req, res) => {
 
     const cart = await Cart.findOne({ userId });
     if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: " Cart not found",
+      return res.status(200).json({
+        success: true,
+        data: {
+          items: [],
+        },
       });
     }
 
