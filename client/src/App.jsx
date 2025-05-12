@@ -25,6 +25,8 @@ import { Skeleton } from "./components/ui/skeleton";
 import SearchProducts from "./pages/shopping-view/search";
 import ForgotPasswordForm from "./pages/auth/ForgotPassword";
 import ResetPasswordForm from "./pages/auth/ResetPassword";
+import PolicyPage from "./components/Privacyandolicy";
+import TermsAndConditionsPage from "./components/Termsandonditions";
 
 
 function App() {
@@ -90,6 +92,9 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
           <Route path="/unauth-page" element={<UnauthPage />} />
+          <Route path="/privacy-policy" element={<PolicyPage />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
+
         </Routes>
       </div>
     </>
