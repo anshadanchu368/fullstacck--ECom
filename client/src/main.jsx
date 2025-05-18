@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId="763803715319-v9dser35ipels2fke9ugra84djfb69tl.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
   <BrowserRouter>
     <Provider store={store}>
       <App />
@@ -17,3 +17,5 @@ createRoot(document.getElementById("root")).render(
   </BrowserRouter>
     </GoogleOAuthProvider>
 );
+
+import.meta.env.VITE_GOOGLE_CLIENT_ID 

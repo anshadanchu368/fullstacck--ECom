@@ -1,5 +1,5 @@
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client('763803715319-v9dser35ipels2fke9ugra84djfb69tl.apps.googleusercontent.com');
+const client = new OAuth2Client(Process.env.GOOGLE_CLIENT_ID);
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const { RegisterUser, loginUser, logout, authMiddleware, forgotPassword, resetPassword, findOrCreateUser } = require("../../controllers/auth/auth-controller");
@@ -29,7 +29,7 @@ router.post('/google-login', async (req, res) => {
     // Verify the Google token
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: '763803715319-v9dser35ipels2fke9ugra84djfb69tl.apps.googleusercontent.com',
+      audience: Process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
@@ -44,11 +44,11 @@ router.post('/google-login', async (req, res) => {
     // Create a session or send a cookie (like normal login)
     const jwtToken = jwt.sign(
       { id: user._id, role: user.role, email: user.email, userName: user.userName },
-      "CLIENT_SECRET_KEY",
+      Process.env.JWT_SECRET,
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", jwtToken, { httpOnly: true, secure: false }).json({
+    res.cookie("token", jwtToken, { httpOnly: true, secure: true }).json({
       success: true,
       message: 'Google login successful',
       user: {

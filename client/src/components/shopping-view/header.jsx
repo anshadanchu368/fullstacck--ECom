@@ -187,8 +187,8 @@ function HeaderRightContent({ isMobile = false }) {
               size="sm"
               className="gap-2 hover:bg-primary/10 transition-all duration-300 h-9 px-2 lg:px-3"
             >
-              <Avatar className="h-7 w-7 lg:h-8 lg:w-8 bg-gradient-to-br from-primary to-primary/70 text-white">
-                <AvatarFallback className="text-white font-extrabold text-xs">
+              <Avatar className="h-7 w-7 lg:h-8 lg:w-8 bg-gradient-to-br from-primary to-primary/70 text-black">
+                <AvatarFallback className="text-black font-extrabold text-xs">
                   {(user?.userName || "U").slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>

@@ -72,11 +72,11 @@ const RegisterUser = async (req, res) => {
         email: newUser.email,
         userName: newUser.userName,
       },
-      "CLIENT_SECRET_KEY",
+      process.env.JWT_SECRET,
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, { httpOnly: true, secure: true }).json({
       success: true,
       message: "Registration successful, email sent, and logged in",
       user: {
@@ -108,13 +108,13 @@ const logout = async (req, res) => {
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token)
-    return res.status(401).json({
+    return res.status(401).json({ 
       success: false,
       message: "Unauthorized token",
     });
 
   try {
-    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (e) {
@@ -236,14 +236,14 @@ const loginUser = async (req, res) => {
         email: checkUser.email,
         userName: checkUser.userName,
       },
-      "CLIENT_SECRET_KEY",
+      process.env.JWT_SECRET,
       { expiresIn: tokenExpiry }
     );
 
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
       })
       .json({
