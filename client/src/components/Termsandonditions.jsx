@@ -56,7 +56,7 @@ const TermsAndConditionsPage = () => {
 
       <h2 className="text-xl font-semibold mt-6">9. Contact</h2>
       <p>
-        For questions or concerns, please contact us at <strong>Clapstudio38@gmail.com</strong>.
+        For questions or concerns, please contact us at <strong>Clapstudio53@gmail.com</strong>.
       </p>
 
       <p>🌐 www.Clapstudio.in</p>

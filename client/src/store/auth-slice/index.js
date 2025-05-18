@@ -12,7 +12,7 @@ export const registerUser = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `{import.meta.env.VITE_API_URL}/api/auth/register`,
         formData,
         {
           withCredentials: true,
@@ -30,7 +30,7 @@ export const loginUser = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         formData,
         {
           withCredentials: true,
@@ -49,7 +49,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/auth/logout`,{
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,{
           withCredentials:true,
         }
         
@@ -67,7 +67,7 @@ export const checkAuth = createAsyncThunk(
   async (_,{ rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/auth/check-auth",
+        `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
         {
           withCredentials: true,
           headers: {
@@ -87,7 +87,7 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async (email, { rejectWithValue }) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { email });
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Request failed');
@@ -101,7 +101,7 @@ export const resetPassword = createAsyncThunk(
     try {
       console.log('Attempting password reset with token');
       const res = await axios.post(
-        `http://localhost:5000/api/auth/reset-password/${token}`, 
+        `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`, 
         { password }
       );
       console.log('Reset password response:', res.data);
@@ -121,7 +121,7 @@ export const googleLogin = createAsyncThunk(
   async (token, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/google-login',
+        `${import.meta.env.VITE_API_URL}/api/auth/google-login`,
         { token },
         { withCredentials: true }
       );

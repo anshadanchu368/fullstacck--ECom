@@ -48,11 +48,11 @@ const PolicyPage = () => {
       <h2 className="text-xl font-semibold mt-6">Your Rights</h2>
       <p>
         You may request access to, correction of, or deletion of your data by contacting us at{" "}
-        <strong>clapstudio38@gmail.com</strong>.
+        <strong>clapstudio53@gmail.com</strong>.
       </p>
 
       <h2 className="text-xl font-semibold mt-6">Contact</h2>
-      <p>📧 clapstudio38@gmail.com</p>
+      <p>📧 clapstudio53@gmail.com</p>
       <p>🌐 www.clapstudio.in</p>
 
       <hr className="my-8" />
@@ -104,7 +104,7 @@ const PolicyPage = () => {
       </p>
 
       <h2 className="text-xl font-semibold mt-6">Contact</h2>
-      <p>📧 clapstudio38@gmail.com</p>
+      <p>📧 clapstudio53@gmail.com</p>
       <p>🌐 www.clapstudio.in</p>
     </div>
   );

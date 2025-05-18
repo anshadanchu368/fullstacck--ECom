@@ -84,7 +84,7 @@ const ShoppingCheckout = () => {
         return
       }
 
-      const response = await axios.get("http://localhost:5000/api/shop/order/getkey")
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/getkey`)
       const key = response.data.key
 
       const options = {
@@ -96,7 +96,7 @@ const ShoppingCheckout = () => {
         image: logo,
         order_id: res.order.id,
         handler: async (response) => {
-          const verifyRes = await axios.post("http://localhost:5000/api/shop/order/verify", {
+          const verifyRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/shop/order/verify`, {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,

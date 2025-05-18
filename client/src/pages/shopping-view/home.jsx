@@ -282,21 +282,7 @@ const ShoppingHome = () => {
           </div>
         </div>
 
-        {/* Carousel Controls */}
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
-          {featureImageList && featureImageList.length > 0
-            ? featureImageList.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentSlide ? "w-8 bg-primary" : "bg-white/50"
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))
-            : null}
-        </div>
+
 
         {/* <Button
           onClick={() => {
@@ -675,7 +661,7 @@ const ShoppingHome = () => {
           <li className="flex items-center">
             <Mail className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
             <span className="text-muted-foreground text-sm">
-              clapstudio38@gmail.com
+              clapstudio53@gmail.com
             </span>
           </li>
         </ul>

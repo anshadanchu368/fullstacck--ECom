@@ -5,7 +5,7 @@ export const subscribeNewsletter = createAsyncThunk(
   'newsletter/subscribe',
   async (email, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/newsletter/subscribe', { email })
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/newsletter/subscribe `, { email })
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)

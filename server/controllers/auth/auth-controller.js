@@ -166,7 +166,7 @@ const forgotPassword = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    const resetURL = `http://localhost:5173/auth/reset-password/${resetToken}`;
+    const resetURL = `${process.env.CLIENT_BASE_URL}/auth/reset-password/${resetToken}`;
     const emailContent = `
       <p>Hello ${user.userName},</p>
       <p>You requested a password reset. Click the link below to set a new password:</p>

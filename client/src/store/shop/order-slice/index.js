@@ -16,7 +16,7 @@ export const createNewOrder = createAsyncThunk(
   "order/createNewOrder",
   async (orderData, thunkAPI) => {
     try {
-      const { data } = await axios.post("http://localhost:5000/api/shop/order/create", orderData);
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/shop/order/create`, orderData);
       return data; // Return the data, which will include the order info
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -31,7 +31,7 @@ export const verifyPayment = createAsyncThunk(
   "order/verifyPayment",
   async (paymentData, thunkAPI) => {
     try {
-      const { data } = await axios.post("http://localhost:5000/api/shop/order/verify", paymentData);
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/shop/order/verify`, paymentData);
       return data; // Return the verification response
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -45,7 +45,7 @@ export const getAllOrderByUSer = createAsyncThunk(
   "order/getAllOrderByUSer",
   async (userId, thunkAPI) => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/shop/order/list/${userId}`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/list/${userId}`);
       return data; // Return the verification response
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -59,7 +59,7 @@ export const getOrderDetails = createAsyncThunk(
   "order/getOrderDetails",
   async (id, thunkAPI) => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/shop/order/details/${id}`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/details/${id}`);
 
       return data; // Return the verification response
     } catch (error) {

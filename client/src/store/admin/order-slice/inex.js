@@ -15,7 +15,7 @@ export const getAllOrdersForAdmin = createAsyncThunk(
   "order/getAllOrdersForAdmin",
   async (_, thunkAPI) => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/admin/orders/get`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders/get`);
       return data; 
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -29,7 +29,7 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
   "order/getOrderDetailsForAdmin",
   async (id, thunkAPI) => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/admin/orders/details/${id}`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders/details/${id}`);
       return data; 
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -44,7 +44,7 @@ export const updateOrderStatus = createAsyncThunk(
   async ({ id, orderStatus }, thunkAPI) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/admin/orders/update/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/orders/update/${id}`,
         { orderStatus }
       );
       return { ...data, id, orderStatus }; // Return id and orderStatus for updating local state
@@ -61,7 +61,7 @@ export const deleteOrder = createAsyncThunk(
   "order/deleteOrder",
   async (id, thunkAPI) => {
     try {
-      const { data } = await axios.delete(`http://localhost:5000/api/admin/orders/delete/${id}`);
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/orders/delete/${id}`);
       return { ...data, id }; // Return id for removing from local state
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -76,7 +76,7 @@ export const deleteAllOrders = createAsyncThunk(
   "order/deleteAllOrders",
   async (_, thunkAPI) => {
     try {
-      const { data } = await axios.delete(`http://localhost:5000/api/admin/orders/delete-all`);
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/orders/delete-all`);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
