@@ -26,10 +26,10 @@ import { useEffect, useState } from "react"
 import { fetchAllFilteredProducts, fetchProductDetails } from "@/store/shop/products-slice"
 import ShoppingProductTile from "./product-tile"
 import { useSearchParams } from "react-router-dom"
-import ProductsDetailsDialog from "./product-Details"
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice"
 import { toast } from "sonner"
-import { motion, AnimatePresence } from "framer-motion"
+import {  AnimatePresence } from "framer-motion"
+import ProductsDetailsDialog from "./product-Details"
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = []

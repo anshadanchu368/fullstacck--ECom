@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { IndianRupee, StarIcon } from "lucide-react";
+import { IndianRupee } from "lucide-react";
 
 import { Button } from "@/components/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
