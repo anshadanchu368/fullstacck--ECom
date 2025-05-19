@@ -33,7 +33,6 @@ import {
 } from "@/store/shop/products-slice";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import ShoppingProductTile from "./product-tile";
-import ProductsDetailsDialog from "./";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -50,6 +49,7 @@ import { getFeatureImage } from "@/store/common-slice";
 import ImageCarousel from "./imageCarousel";
 import NewsletterForm from "@/components/shopping-view/NewsLetter";
 import AboutSection from "@/components/AboutUS";
+import ProductsDetailsDialog from "./ProductsDetailsDialog";
 
 const categories = [
   { id: "men", label: "Men", icon: ShirtIcon },

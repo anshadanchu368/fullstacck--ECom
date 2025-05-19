@@ -10,7 +10,7 @@ import ShoppingProductTile from "./product-tile";
 import { toast } from "sonner";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { fetchProductDetails } from "@/store/shop/products-slice";
-import ProductsDetailsDialog from "./";
+import ProductsDetailsDialog from "./ProductsDetailsDialog";
 
 const SearchProducts = () => {
   const [keyword, setKeyword] = useState("");
