@@ -1,5 +1,5 @@
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(Process.env.GOOGLE_CLIENT_ID);
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const { RegisterUser, loginUser, logout, authMiddleware, forgotPassword, resetPassword, findOrCreateUser } = require("../../controllers/auth/auth-controller");
@@ -44,7 +44,7 @@ router.post('/google-login', async (req, res) => {
     // Create a session or send a cookie (like normal login)
     const jwtToken = jwt.sign(
       { id: user._id, role: user.role, email: user.email, userName: user.userName },
-      Process.env.JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "60m" }
     );
 
