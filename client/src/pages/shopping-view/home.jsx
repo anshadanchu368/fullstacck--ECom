@@ -33,7 +33,7 @@ import {
 } from "@/store/shop/products-slice";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import ShoppingProductTile from "./product-tile";
-import ProductsDetailsDialog from "./product-Details";
+import ProductsDetailsDialog from "./";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {

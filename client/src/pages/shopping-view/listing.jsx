@@ -29,7 +29,7 @@ import { useSearchParams } from "react-router-dom"
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice"
 import { toast } from "sonner"
 import {  AnimatePresence } from "framer-motion"
-import ProductsDetailsDialog from "./product-Details"
+import ProductsDetailsDialog from "./ProductsDetailsDialog"
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = []
