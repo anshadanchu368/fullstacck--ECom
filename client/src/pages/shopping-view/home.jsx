@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/pagination";
 
 import { getFeatureImage } from "@/store/common-slice";
-import ImageCarousel from "./imageCarousel";
+import ImageCarousel from "./ImageCarousel";
 import NewsletterForm from "@/components/shopping-view/NewsLetter";
 import AboutSection from "@/components/AboutUS";
 import ProductsDetailsDialog from "./ProductsDetailsDialog";
