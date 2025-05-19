@@ -28,7 +28,7 @@ import ShoppingProductTile from "./product-tile"
 import { useSearchParams } from "react-router-dom"
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice"
 import { toast } from "sonner"
-import {  AnimatePresence } from "framer-motion"
+import { motion,AnimatePresence } from "framer-motion"
 import ProductsDetailsDialog from "./ProductsDetailsDialog"
 
 function createSearchParamsHelper(filterParams) {
