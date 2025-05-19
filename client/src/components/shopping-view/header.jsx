@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "../ui/avatar"
 import { shoppingVIewHeaderMenuItems } from "@/config"
-import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice"
+import {  resetTokenAndCredentials } from "@/store/auth-slice"
 import UserCartWrapper from "./cart-wrapper"
 import { fetchCartItems } from "@/store/shop/cart-slice"
 import { Label } from "../ui/label"
