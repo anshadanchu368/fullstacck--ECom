@@ -2,18 +2,23 @@ import React from 'react'
 import { Button } from '../button'
 import { AlignJustify, LogOut } from 'lucide-react'
 import { useDispatch } from 'react-redux'
-import { logoutUser } from '@/store/auth-slice'
+import { logoutUser, resetTokenAndCredentials } from '@/store/auth-slice'
+import { useNavigate } from 'react-router-dom'
 
 const AdminHeader = ({setOpen}) => {
    const dispatch=useDispatch()
+   const navigate=useNavigate()
    function handleLogout() {
-    dispatch(logoutUser())
-      .then((res) => {
-        console.log("Logout successful:", res);
-      })
-      .catch((err) => {
-        console.log("Logout error:", err);
-      });
+    // dispatch(logoutUser())
+    //   .then((res) => {
+    //     console.log("Logout successful:", res);
+    //   })
+    //   .catch((err) => {
+    //     console.log("Logout error:", err);
+    //   });
+    dispatch(resetTokenAndCredentials())
+        sessionStorage.clear()
+        navigate("/auth/login")
   }
   return (
   <header className="flex justify-between items-center px-4 py-3">

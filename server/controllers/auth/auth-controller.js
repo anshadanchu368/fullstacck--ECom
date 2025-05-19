@@ -106,7 +106,8 @@ const logout = async (req, res) => {
 };
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
+  const authHeader =req.headers['authorization'];
+  const token = authHeader && authHeader.split(" ")[1];
   if (!token)
     return res.status(401).json({ 
       success: false,
@@ -240,22 +241,34 @@ const loginUser = async (req, res) => {
       { expiresIn: tokenExpiry }
     );
 
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
-      })
-      .json({
-        success: true,
-        message: "Logged in successfully",
-        user: {
-          email: checkUser.email,
-          role: checkUser.role,
-          id: checkUser._id,
-          userName: checkUser.userName,
-        },
-      });
+    // res
+    //   .cookie("token", token, {
+    //     httpOnly: true,
+    //     secure: true,
+    //     maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
+    //   })
+    //   .json({
+    //     success: true,
+    //     message: "Logged in successfully",
+    //     user: {
+    //       email: checkUser.email,
+    //       role: checkUser.role,
+    //       id: checkUser._id,
+    //       userName: checkUser.userName,
+    //     },
+    //   });
+
+    res.status(200).json({
+      success:true,
+      message: 'Logged in successfully',
+      token,
+      user: {
+              email: checkUser.email,
+              role: checkUser.role,
+              id: checkUser._id,
+              userName: checkUser.userName,
+            },
+    })
   } catch (e) {
     console.log("Login error:", e);
     res.status(500).json({
