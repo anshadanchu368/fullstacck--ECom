@@ -48,9 +48,10 @@ router.post('/google-login', async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", jwtToken, { httpOnly: true, secure: true }).json({
+    res.status(200).json({
       success: true,
       message: 'Google login successful',
+      token: jwtToken,
       user: {
         id: user._id,
         email: user.email,

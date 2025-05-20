@@ -77,7 +77,7 @@ export const checkAuth = createAsyncThunk(
           },
         }
       );
-      return response.data;
+      return response.data; 
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -238,6 +238,8 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success ? true : false;
+        state.token = action.payload.token;
+        sessionStorage.setItem('token', JSON.stringify(action.payload.token));
       })
       .addCase(googleLogin.rejected, (state, action) => {
         state.isLoading = false;
