@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AnimatePresence } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { IndianRupee } from "lucide-react";
 
